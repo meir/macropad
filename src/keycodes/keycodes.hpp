@@ -1,7 +1,7 @@
 
 #pragma once
 
-enum control_keycodes {
+enum control_keycodes : uint16_t {
     KEY_DEFAULT_MIN             = 0x0000,
     KEY_DEFAULT_MAX             = 0x00FF,
     KEY_MACRO_MIN               = 0x0100,
@@ -30,7 +30,7 @@ enum control_keycodes {
 #define LS(layer) LAYER_SWITCH(layer)
 #define LT(layer) LAYER_TOGGLE(layer)
 
-enum hid_keyboard_keypad_usage {
+enum hid_keyboard_keypad_usage : uint16_t {
     KC_NO = 0x00,
     KC_ROLL_OVER,
     KC_POST_FAIL,
@@ -207,7 +207,7 @@ enum hid_keyboard_keypad_usage {
     KC_RIGHT_GUI
 };
 
-enum media_keycodes {
+enum media_keycodes : uint16_t {
     KC_SYSTEM_POWER = 0xA5,
     KC_SYSTEM_SLEEP,
     KC_SYSTEM_WAKE,
@@ -237,7 +237,7 @@ enum media_keycodes {
     KC_BRIGHTNESS_DOWN
 };
 
-enum mouse_keycodes {
+enum mouse_keycodes : uint16_t {
     KC_MS_UP = 0xED,
     KC_MS_DOWN,
     KC_MS_LEFT,

@@ -8,7 +8,7 @@ by including it, with the C preprocessing directive `#include'.
 
 ```src/main.c
 
-#include "header.h"
+#include "header.hpp"
 
 int main (void)
 {

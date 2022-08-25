@@ -1,10 +1,10 @@
 
 #pragma once
 
-#include "matrix.h"
-#include "keymap.h"
+#include "../matrix/matrix.hpp"
+#include "../keymap/keymap.hpp"
+#include "../config/config.hpp"
 
-#include <WString.h>
 #include <vector>
 
 class Manager 

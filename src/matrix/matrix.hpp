@@ -1,10 +1,10 @@
 
 #pragma once
 
-#include <WString.h>
+#include <Arduino.h>
 #include <vector>
 
-class Matrix 
+class Matrix
 {
     private:
         std::vector<int> _columns;

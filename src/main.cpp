@@ -1,11 +1,13 @@
-#include "USB.h"
-#include "USBHIDConsumerControl.h"
+
 #include <Arduino.h>
+#include "manager/manager.hpp"
+#include "config/config.hpp"
 
-#include "config.h"
-#include "manager.h"
+Manager manager;
 
-Manager manager();
+void setup() {
+
+}
 
 void loop() {
   manager.run();
