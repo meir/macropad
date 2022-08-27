@@ -31,6 +31,7 @@ enum control_keycodes : uint16_t {
 #define LT(layer) LAYER_TOGGLE(layer)
 
 enum hid_keyboard_keypad_usage : uint16_t {
+    ____ = 0x00,
     KC_NO = 0x00,
     KC_ROLL_OVER,
     KC_POST_FAIL,

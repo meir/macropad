@@ -4,6 +4,9 @@
 #include <Arduino.h>
 #include <vector>
 
+#include "../graphics/graphics.hpp"
+#include "../config/config.hpp"
+
 class Matrix
 {
     private:

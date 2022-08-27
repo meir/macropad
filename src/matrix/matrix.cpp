@@ -13,11 +13,11 @@ Matrix::Matrix() {}
 
 void Matrix::Init() {
     for(int i = 0; i < _columns.size(); i++) {
-        pinMode(_columns.at(i), OUTPUT);
+        pinMode(_columns.at(i), INPUT);
     }
 
     for(int i = 0; i < _rows.size(); i++) {
-        pinMode(_rows.at(i), INPUT);
+        pinMode(_rows.at(i), INPUT_PULLUP);
     }
 
     for(int i = 0; i < _states.size(); i++) {
@@ -25,75 +25,26 @@ void Matrix::Init() {
     }
 }
 
-// A2 -> A0  |  A2 -> A1  |  A3 -> A0
-// A4 -> A0  |        A4 -> A1
-
 void Matrix::Scan() {
-    for(int i = 0; i < _rows.size(); i++) {
-        int row = _rows.at(i);
+    for(int r = 0; r < _rows.size(); r++) {
+        int row = _rows.at(r);
         pinMode(row, INPUT_PULLUP);
 
-        for(int j = 0; j < _columns.size(); j++) {
-            int column = _columns.at(j);
-            digitalWrite(column, HIGH);
-            int state = digitalRead(row);
-            digitalWrite(column, LOW);
+        for(int c = 0; c < _columns.size(); c++) {
+            int column = _columns.at(c);
 
-            if(state == HIGH) {
-                _states.at(i * _columns.size() + j) += 1;
-            } else {
-                _states.at(i * _columns.size() + j) = 0;
-            }
+            pinMode(column, OUTPUT);
+            int state = digitalRead(row);
+            pinMode(column, INPUT);
+
+            #ifdef DEBUG
+            gfx_println("(" + String(c, DEC) + ", " + String(r, DEC) + ")[" + String(r * _columns.size() + c, DEC) + "] = " + String(!state, DEC));
+            #endif
+            _states.at(r * _columns.size() + c) = !state;
         }
 
         pinMode(row, INPUT);
     }
-
-    // for(int x = 0; x < _rows.size(); x++) {
-    //     int row = _rows.at(x);
-    //     pinMode(row, INPUT_PULLUP);
-        
-    //     for(int y = 0; y < _columns.size(); y++) {
-    //         int column = _columns.at(y);
-
-    //         pinMode(column, OUTPUT);
-    //         digitalWrite(column, LOW);
-
-    //         int state = digitalRead(row);
-    //         if(state == HIGH) {
-    //             _states.at(x * _columns.size() + y) = 0;
-    //             continue;
-    //         }
-            
-    //         _states.at(x * _columns.size() + y) += 1;
-
-    //         pinMode(column, INPUT);
-    //     }
-    //     pinMode(row, INPUT);
-    // }
-
-    // for(int x = 0; x < _columns.size(); x++) {
-    //     int col = _columns.at(x);
-    //     pinMode(col, OUTPUT);
-    //     digitalWrite(col, LOW);
-
-    //     for(int y = 0; y < _rows.size(); y++) {
-    //         int row = _rows.at(y);
-    //         pinMode(row, INPUT_PULLUP);
-    //         int state = digitalRead(row);
-            
-    //         if(state == HIGH) {
-    //             _states.at(y + (_columns.size() * x)) = 0;
-    //             continue;
-    //         }
-
-    //         _states.at(y + (_columns.size() * x)) += 1;
-
-    //         pinMode(row, INPUT);
-    //     }
-
-    //     pinMode(col, INPUT);
-    // }
 }
 
 int Matrix::Length() {
