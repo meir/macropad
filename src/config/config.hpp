@@ -22,12 +22,13 @@
 
 // Define default keymap, this will be able to be changed within the web interface eventually.
 #define KEYMAP {\
-    {KC_F13, KC_F14, KC_F15, ____, KC_F16, KC_F17},\
-    {KC_F18, KC_F19, KC_F20, ____, KC_F21, KC_F22},\
-    {KC_Q,   KC_W,   KC_E,   ____, KC_R,   KC_LEFT_CTRL},\
+    {KC_F13, KC_F14, KC_F15, KC_NO, KC_F16, KC_F17},\
+    {KC_F18, KC_F19, KC_F20, KC_NO, KC_F21, KC_F22},\
+    {KC_Q,   KC_W,   KC_E,   KC_NO, KC_R,   KC_LEFT_CTRL},\
+    {KC_MEDIA_SCAN_PREVIOUS, KC_MEDIA_PLAY_PAUSE, KC_MEDIA_SCAN_NEXT, KC_NO, KC_MEDIA_BACK, KC_MEDIA_FORWARD},\
 };
 
-#define LAYER_NAMES {"F13-F17", "F18-F22", "League "}
+#define LAYER_NAMES {"F13-F17", "F18-F22", "League", "Media"}
 #define LAYER_COLORS {0x7e2bcc, 0xd9276b, 0xebeb54}
 
 // Network SSID and Password are required to launch the web server and give an ip.

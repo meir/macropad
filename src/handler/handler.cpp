@@ -1,21 +1,45 @@
 
 #include "handler.hpp"
 
-void keycode_handler(uint16_t keycode) {
-    switch(keycode) {
-        case KEY_MACRO_MIN...KEY_LAYER_TOGGLE_MAX:
+#include "../graphics/graphics.hpp"
 
-            break;
+#include <String>
+
+void keycode_handler(event_t event) {
+    switch(event.keycode) {
+        // case KEY_MACRO_MIN...KEY_LAYER_TOGGLE_MAX:
+        //     event.key_type = KT_MACRO;
+
+        //     //TODO: To be implemented
+
+            // break;
         case KC_NO...KC_EXSEL:
+
+            if(event.type == KDN) {
+                event.keyboard.pressRaw(event.keycode);
+            }else{
+                event.keyboard.releaseRaw(event.keycode);
+            }
 
             break;
         case KC_LEFT_CTRL...KC_RIGHT_GUI:
 
-            break;
-        case KC_SYSTEM_POWER...KC_BRIGHTNESS_DOWN:
+            if(event.type == KDN) {
+                event.keyboard.pressRaw(event.keycode);
+            }else{
+                event.keyboard.releaseRaw(event.keycode);
+            }
 
             break;
-        case KC_MS_UP...KC_MS_ACCEL2:
+        case KC_MEDIA_POWER...KC_MEDIA_PAN:
+
+            uint16_t media_keycode = event.keycode ^ KEY_MEDIA_MIN;
+
+            if(event.type == KDN) {
+                event.consumer.press(media_keycode);
+            }else{
+                event.consumer.release();
+            }
 
             break;
     }

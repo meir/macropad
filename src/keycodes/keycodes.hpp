@@ -1,25 +1,38 @@
 
 #pragma once
 
-enum control_keycodes : uint16_t {
-    KEY_DEFAULT_MIN             = 0x0000,
-    KEY_DEFAULT_MAX             = 0x00FF,
-    KEY_MACRO_MIN               = 0x0100,
-    KEY_MACRO_MAX               = 0x01FF,
-    KEY_FUNCTION_MIN            = 0x0200,
-    KEY_FUNCTION_MAX            = 0x02FF,
-    KEY_MEDIA_MIN               = 0x0300,
-    KEY_MEDIA_MAX               = 0x03FF,
-    KEY_RGB_MIN                 = 0x0400,
-    KEY_RGB_MAX                 = 0x04FF,
-    KEY_MOUSE_MIN               = 0x0500,
-    KEY_MOUSE_MAX               = 0x05FF,
-    KEY_LAYER_HOLD_MIN          = 0x0600,
-    KEY_LAYER_HOLD_MAX          = 0x06FF,
-    KEY_LAYER_SWITCH_MIN        = 0x0700,
-    KEY_LAYER_SWITCH_MAX        = 0x07FF,
-    KEY_LAYER_TOGGLE_MIN        = 0x0800,
-    KEY_LAYER_TOGGLE_MAX        = 0x08FF,
+enum keycode_type : uint8_t {
+    KT_UNKNOWN          = 0,
+    KT_DEFAULT          = 1,
+    KT_MACRO            = 2,
+    KT_FUNCTION         = 3,
+    KT_MEDIA            = 4,
+    KT_RGB              = 5,
+    KT_MOUSE            = 6,
+    KT_LAYER_HOLD       = 7,
+    KT_LAYER_SWITCH     = 8,
+    KT_LAYER_TOGGLE     = 9,
+};
+
+enum control_keycodes : uint32_t {
+    KEY_DEFAULT_MIN             = 0x00000000,
+    KEY_DEFAULT_MAX             = 0x00FF0000,
+    KEY_MACRO_MIN               = 0x01000000,
+    KEY_MACRO_MAX               = 0x01FF0000,
+    KEY_FUNCTION_MIN            = 0x02000000,
+    KEY_FUNCTION_MAX            = 0x02FF0000,
+    KEY_MEDIA_MIN               = 0x03000000,
+    KEY_MEDIA_MAX               = 0x03FF0000,
+    KEY_RGB_MIN                 = 0x04000000,
+    KEY_RGB_MAX                 = 0x04FF0000,
+    KEY_MOUSE_MIN               = 0x05000000,
+    KEY_MOUSE_MAX               = 0x05FF0000,
+    KEY_LAYER_HOLD_MIN          = 0x06000000,
+    KEY_LAYER_HOLD_MAX          = 0x06FF0000,
+    KEY_LAYER_SWITCH_MIN        = 0x07000000,
+    KEY_LAYER_SWITCH_MAX        = 0x07FF0000,
+    KEY_LAYER_TOGGLE_MIN        = 0x08000000,
+    KEY_LAYER_TOGGLE_MAX        = 0x08FF0000,
 };
 
 #define LAYER_HOLD(layer)   (KEY_LAYER_HOLD_MIN   | ((layer) & 0xF << 4))
@@ -30,7 +43,7 @@ enum control_keycodes : uint16_t {
 #define LS(layer) LAYER_SWITCH(layer)
 #define LT(layer) LAYER_TOGGLE(layer)
 
-enum hid_keyboard_keypad_usage : uint16_t {
+enum hid_keyboard_keypad_usage : uint32_t {
     ____ = 0x00,
     KC_NO = 0x00,
     KC_ROLL_OVER,
@@ -208,37 +221,59 @@ enum hid_keyboard_keypad_usage : uint16_t {
     KC_RIGHT_GUI
 };
 
-enum media_keycodes : uint16_t {
-    KC_SYSTEM_POWER = 0xA5,
-    KC_SYSTEM_SLEEP,
-    KC_SYSTEM_WAKE,
+enum media_keycodes : uint32_t {
+    KC_MEDIA_POWER                             = 0x03000030,
+    KC_MEDIA_RESET                             = 0x03000031,
+    KC_MEDIA_SLEEP                             = 0x03000032,
 
-    KC_AUDIO_MUTE,
-    KC_AUDIO_VOL_UP,
-    KC_AUDIO_VOL_DOWN,
-    KC_MEDIA_NEXT_TRACK,
-    KC_MEDIA_PREV_TRACK,
-    KC_MEDIA_STOP,
-    KC_MEDIA_PLAY_PAUSE,
-    KC_MEDIA_SELECT,
-    KC_MEDIA_EJECT,
-    KC_MAIL,
-    KC_CALCULATOR,
-    KC_MY_COMPUTER,
-    KC_WWW_SEARCH,
-    KC_WWW_HOME,
-    KC_WWW_BACK,
-    KC_WWW_FORWARD,
-    KC_WWW_STOP,
-    KC_WWW_REFRESH,
-    KC_WWW_FAVORITES,
-    KC_MEDIA_FAST_FORWARD,
-    KC_MEDIA_REWIND,
-    KC_BRIGHTNESS_UP,
-    KC_BRIGHTNESS_DOWN
+// Screen Brightness
+    KC_MEDIA_BRIGHTNESS_INCREMENT              = 0x0300006F,
+    KC_MEDIA_BRIGHTNESS_DECREMENT              = 0x03000070,
+
+// These HID usages operate only on mobile systems (battery powered) and
+// require Windows 8 (build 8302 or greater).
+    KC_MEDIA_WIRELESS_RADIO_CONTROLS           = 0x0300000C,
+    KC_MEDIA_WIRELESS_RADIO_BUTTONS            = 0x030000C6,
+    KC_MEDIA_WIRELESS_RADIO_LED                = 0x030000C7,
+    KC_MEDIA_WIRELESS_RADIO_SLIDER_SWITCH      = 0x030000C8,
+
+// Media Control
+    KC_MEDIA_PLAY_PAUSE                        = 0x030000CD,
+    KC_MEDIA_SCAN_NEXT                         = 0x030000B5,
+    KC_MEDIA_SCAN_PREVIOUS                     = 0x030000B6,
+    KC_MEDIA_STOP                              = 0x030000B7,
+    KC_MEDIA_VOLUME                            = 0x030000E0,
+    KC_MEDIA_MUTE                              = 0x030000E2,
+    KC_MEDIA_BASS                              = 0x030000E3,
+    KC_MEDIA_TREBLE                            = 0x030000E4,
+    KC_MEDIA_BASS_BOOST                        = 0x030000E5,
+    KC_MEDIA_VOLUME_INCREMENT                  = 0x030000E9,
+    KC_MEDIA_VOLUME_DECREMENT                  = 0x030000EA,
+    KC_MEDIA_BASS_INCREMENT                    = 0x03000152,
+    KC_MEDIA_BASS_DECREMENT                    = 0x03000153,
+    KC_MEDIA_TREBLE_INCREMENT                  = 0x03000154,
+    KC_MEDIA_TREBLE_DECREMENT                  = 0x03000155,
+
+// Application Launcher
+    KC_MEDIA_CONFIGURATION                     = 0x03000183,
+    KC_MEDIA_EMAIL_READER                      = 0x0300018A,
+    KC_MEDIA_CALCULATOR                        = 0x03000192,
+    KC_MEDIA_LOCAL_BROWSER                     = 0x03000194,
+
+// Browser/Explorer Specific
+    KC_MEDIA_SEARCH                            = 0x03000221,
+    KC_MEDIA_HOME                              = 0x03000223,
+    KC_MEDIA_BACK                              = 0x03000224,
+    KC_MEDIA_FORWARD                           = 0x03000225,
+    KC_MEDIA_BR_STOP                           = 0x03000226,
+    KC_MEDIA_REFRESH                           = 0x03000227,
+    KC_MEDIA_BOOKMARKS                         = 0x0300022A,
+
+// Mouse Horizontal scroll
+    KC_MEDIA_PAN                               = 0x03000238,
 };
 
-enum mouse_keycodes : uint16_t {
+enum mouse_keycodes : uint32_t {
     KC_MS_UP = 0xED,
     KC_MS_DOWN,
     KC_MS_LEFT,

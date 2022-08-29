@@ -4,6 +4,10 @@
 #include <Arduino.h>
 #include "../keycodes/keycodes.hpp"
 
+#include "USB.h"
+#include "USBHIDConsumerControl.h"
+#include "USBHIDKeyboard.h"
+
 typedef enum event_type_t {
     RST = 0,
     KUP = 1,
@@ -12,8 +16,11 @@ typedef enum event_type_t {
 };
 
 typedef struct event_t {
-    uint16_t type: 5;
-    uint16_t keycode: 3;
+    event_type_t type;
+    uint32_t keycode;
+
+    USBHIDConsumerControl consumer;
+    USBHIDKeyboard keyboard;
 };
 
 typedef bool (*key_checker_t)(event_t *event);
@@ -26,4 +33,4 @@ typedef struct {
 
 extern keycode_callbacks_t keycode_callbacks[];
 
-void keycode_handler(uint16_t keycode);
+void keycode_handler(event_t event);

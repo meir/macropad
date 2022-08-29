@@ -21,6 +21,7 @@ void gfx_init() {
   // initialize TFT
   _tft.init(135, 240); // Init ST7789 240x135
   _tft.setRotation(2);
+  _tft.setTextSize(2);
   _tft.fillScreen(ST77XX_BLACK);
 }
 
@@ -38,7 +39,7 @@ void gfx_print(String text) {
 }
 
 void gfx_println(String text) {
-  gfx_print(text + "\n");
+  gfx_print(text + "                         \n");
 }
 
 void led_setColor(uint32_t color) {

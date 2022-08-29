@@ -22,4 +22,5 @@ class Matrix
         void Scan();
         int Length();
         int GetState(int index);
+        std::vector<int> GetStates();
 };

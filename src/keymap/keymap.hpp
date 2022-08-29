@@ -3,6 +3,7 @@
 
 #include "../matrix/matrix.hpp"
 #include "../config/config.hpp"
+#include "../handler/handler.hpp"
 
 #include "../graphics/graphics.hpp"
 
@@ -21,6 +22,13 @@ class Keymap
         int ActiveLayer;
         USBHIDConsumerControl consumer;
         USBHIDKeyboard keyboard;
+
+        std::vector<std::vector<uint32_t>> keymap;
+        std::vector<String> layerNames;
+        std::vector<uint32_t> layerColors;
+
+        std::vector<int> last_scan;
+        
         // Keymap map;
         // WebServer server;
         // Preferences preferences;
@@ -29,8 +37,8 @@ class Keymap
         Keymap(Matrix, USBHIDConsumerControl, USBHIDKeyboard);
         Keymap();
         void run();
-        uint16_t getKeycode();
+        uint32_t getKeycode();
         String currentLayerName();
         uint32_t currentLayerColor();
-        std::vector<uint16_t> currentLayer();
+        std::vector<uint32_t> currentLayer();
 };

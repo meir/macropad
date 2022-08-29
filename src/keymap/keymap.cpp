@@ -1,23 +1,5 @@
 #include "keymap.hpp"
 
-#ifdef KEYMAP
-std::vector<std::vector<uint16_t>> keymap = KEYMAP;
-#else
-std::vector<std::vector<uint16_t>> keymap = {};
-#endif
-
-#ifdef LAYER_NAMES
-std::vector<String> layerNames = LAYER_NAMES;
-#else
-std::vector<String> layerNames = {};
-#endif
-
-#ifdef LAYER_COLORS
-std::vector<uint32_t> layerColors = LAYER_COLORS;
-#else
-std::vector<uint32_t> layerColors = {};
-#endif
-
 #if defined(ENCODER_PIN_A) && defined(ENCODER_PIN_B)
 Encoder encoder(ENCODER_PIN_A, ENCODER_PIN_B);
 #endif
@@ -27,6 +9,27 @@ Keymap::Keymap(Matrix matrix, USBHIDConsumerControl _consumer, USBHIDKeyboard _k
     this->ActiveLayer = 0;
     this->consumer = _consumer;
     this->keyboard = _keyboard;
+
+    #ifdef KEYMAP
+    this->keymap = KEYMAP;
+    #else
+    this->keymap = {};
+    #endif
+
+    #ifdef LAYER_NAMES
+    this->layerNames = LAYER_NAMES;
+    #else
+    this->layerNames = {};
+    #endif
+
+    #ifdef LAYER_COLORS
+    this->layerColors = LAYER_COLORS;
+    #else
+    this->layerColors = {};
+    #endif
+
+    this->_matrix.Scan();
+    this->last_scan = this->_matrix.GetStates();
 }
 
 Keymap::Keymap() {}
@@ -50,18 +53,29 @@ void Keymap::run() {
 
     this->ActiveLayer = (encoderValue / rotaryDivider) % keymap.size();
     led_setColor(this->currentLayerColor());
-    gfx_println("Layer: " + this->currentLayerName());
+    gfx_println("Layer: \n" + this->currentLayerName());
 
-    std::vector<uint16_t> layer = this->currentLayer();
+    std::vector<uint32_t> layer = this->currentLayer();
     for(int i = 0; i < layer.size(); i++) {
-        uint16_t state = this->_matrix.GetState(i);
-        if(state > 0) {
-            uint16_t key = layer.at(i);
-            this->keyboard.pressRaw(key);
-        }else{
-            this->keyboard.releaseRaw(layer.at(i));
+        uint32_t state = this->_matrix.GetState(i);
+        event_type_t event = KUP;
+        if(last_scan.at(i) != state) {
+            if(state == 1) {
+                event = KDN;
+            }
         }
+
+        // keycode_handler(layer.at(i), event, this->consumer, this->keyboard);
+        keycode_handler({
+            .type = event,
+            .keycode = layer.at(i),
+
+            .consumer = this->consumer,
+            .keyboard = this->keyboard
+        });
     }
+
+    this->last_scan = _matrix.GetStates();
 }
 
 String Keymap::currentLayerName() {
@@ -72,7 +86,7 @@ String Keymap::currentLayerName() {
     }
 }
 
-std::vector<uint16_t> Keymap::currentLayer() {
+std::vector<uint32_t> Keymap::currentLayer() {
     if(this->ActiveLayer >= 0 && this->ActiveLayer < keymap.size()) {
         return keymap.at(this->ActiveLayer);
     }

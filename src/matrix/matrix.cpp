@@ -54,3 +54,7 @@ int Matrix::Length() {
 int Matrix::GetState(int index) {
     return _states.at(index);
 }
+
+std::vector<int> Matrix::GetStates() {
+    return _states;
+}
