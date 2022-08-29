@@ -6,41 +6,78 @@
 #include <String>
 
 void keycode_handler(event_t event) {
+
     switch(event.keycode) {
-        // case KEY_MACRO_MIN...KEY_LAYER_TOGGLE_MAX:
-        //     event.key_type = KT_MACRO;
+        case SWITCH_DEFAULT:
+            {
+                event.keycode = FROM_DEFAULT(event.keycode);
+                task_user_keycode(event);
+                if(event.resolved) break;
 
-        //     //TODO: To be implemented
-
-            // break;
-        case KC_NO...KC_EXSEL:
-
-            if(event.type == KDN) {
-                event.keyboard.pressRaw(event.keycode);
-            }else{
-                event.keyboard.releaseRaw(event.keycode);
+                switch(event.type) {
+                    case KEY_DOWN: event.keyboard.pressRaw(event.keycode); break;
+                    case KEY_UP: event.keyboard.releaseRaw(event.keycode); break;
+                }
+                break;
             }
+        case SWITCH_MACRO:
+            {
+                event.keycode = FROM_MACRO(event.keycode);
+                task_user_keycode(event);
+                if(event.resolved) break;
+
+                break;
+            }
+        case SWITCH_FUNCTION:
+            {
+                event.keycode = FROM_FUNCTION(event.keycode);
+                task_user_keycode(event);
+                if(event.resolved) break;
+
+                switch(event.type) {
+                    case KEY_DOWN: event.keyboard.pressRaw(event.keycode); break;
+                    case KEY_UP: event.keyboard.releaseRaw(event.keycode); break;
+                }
+
+                break;
+            }
+        case SWITCH_MEDIA:
+            {
+                event.keycode = FROM_MEDIA(event.keycode);
+                task_user_keycode(event);
+                if(event.resolved) break;
+
+                switch(event.type) {
+                    case KEY_DOWN: event.consumer.press(event.keycode); break;
+                    case KEY_UP: event.consumer.release(); break;
+                }
+
+                break;
+            }
+        case SWITCH_RGB:
+            {
+                event.keycode = FROM_RGB(event.keycode);
+                task_user_keycode(event);
+                if(event.resolved) break;
+
+                break;
+            }
+        case SWITCH_MOUSE:
+            {
+                event.keycode = FROM_MOUSE(event.keycode);
+                task_user_keycode(event);
+                if(event.resolved) break;
+
+                break;
+            }
+        case SWITCH_LAYER:
 
             break;
-        case KC_LEFT_CTRL...KC_RIGHT_GUI:
 
-            if(event.type == KDN) {
-                event.keyboard.pressRaw(event.keycode);
-            }else{
-                event.keyboard.releaseRaw(event.keycode);
+        default:
+            {
+                task_user_keycode(event);
+                if(event.resolved) break;
             }
-
-            break;
-        case KC_MEDIA_POWER...KC_MEDIA_PAN:
-
-            uint16_t media_keycode = event.keycode ^ KEY_MEDIA_MIN;
-
-            if(event.type == KDN) {
-                event.consumer.press(media_keycode);
-            }else{
-                event.consumer.release();
-            }
-
-            break;
     }
 }

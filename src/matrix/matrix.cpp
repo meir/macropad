@@ -4,9 +4,7 @@ Matrix::Matrix(std::vector<int> columns, std::vector<int> rows) {
     _columns = columns;
     _rows = rows;
 
-    for(int i = 0; i < _rows.size() * columns.size(); i++) {
-      _states.push_back(0);
-    }
+    _states = 0b0 << (columns.size() * rows.size());
 }
 
 Matrix::Matrix() {}
@@ -20,9 +18,7 @@ void Matrix::Init() {
         pinMode(_rows.at(i), INPUT_PULLUP);
     }
 
-    for(int i = 0; i < _states.size(); i++) {
-        _states.at(i) = 0;
-    }
+    _states = 0b0 << _rows.size() * _columns.size();
 }
 
 void Matrix::Scan() {
@@ -40,7 +36,9 @@ void Matrix::Scan() {
             #ifdef DEBUG
             gfx_println("(" + String(c, DEC) + ", " + String(r, DEC) + ")[" + String(r * _columns.size() + c, DEC) + "] = " + String(!state, DEC));
             #endif
-            _states.at(r * _columns.size() + c) = !state;
+            // 0b0001 ^ (-0b0000 ^ 0b0001) & (1 << 0)
+            int pos = (r * _columns.size() + c);
+            _states = _states ^ ((!state << pos) ^ _states) & (0b1 << pos);
         }
 
         pinMode(row, INPUT);
@@ -48,13 +46,13 @@ void Matrix::Scan() {
 }
 
 int Matrix::Length() {
-    return _states.size();
+    return _rows.size() * _columns.size();
 }
 
-int Matrix::GetState(int index) {
-    return _states.at(index);
+bool Matrix::GetState(int index) {
+    return (_states & 0b1 << index) > 0;
 }
 
-std::vector<int> Matrix::GetStates() {
+byte Matrix::GetStates() {
     return _states;
 }

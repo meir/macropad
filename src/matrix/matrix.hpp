@@ -13,7 +13,7 @@ class Matrix
         std::vector<int> _columns;
         std::vector<int> _rows;
 
-        std::vector<int> _states;
+        byte _states;
 
     public:
         Matrix(std::vector<int> columns, std::vector<int> rows);
@@ -21,6 +21,6 @@ class Matrix
         void Init();
         void Scan();
         int Length();
-        int GetState(int index);
-        std::vector<int> GetStates();
+        bool GetState(int index);
+        byte GetStates();
 };

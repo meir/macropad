@@ -1,4 +1,5 @@
 
+#include "handler/handler.hpp"
 #include <Arduino.h>
 #include "manager/manager.hpp"
 #include "config/config.hpp"

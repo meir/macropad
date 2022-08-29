@@ -1,9 +1,5 @@
 #include "keymap.hpp"
 
-#if defined(ENCODER_PIN_A) && defined(ENCODER_PIN_B)
-Encoder encoder(ENCODER_PIN_A, ENCODER_PIN_B);
-#endif
-
 Keymap::Keymap(Matrix matrix, USBHIDConsumerControl _consumer, USBHIDKeyboard _keyboard) {
     this->_matrix = matrix;
     this->ActiveLayer = 0;
@@ -38,44 +34,48 @@ Keymap::Keymap() {}
 void Keymap::run() {
     gfx_reset();
     _matrix.Scan();
-    
-    int encoderValue = encoder.read();
 
     #ifdef DEBUG
     gfx_println("Encoder: " + String(encoderValue, DEC));
     #endif
 
-    #ifdef ROTARY_DIVIDER
-    int rotaryDivider = ROTARY_DIVIDER;
-    #else
-    int rotaryDivider = 4;
-    #endif
-
-    this->ActiveLayer = (encoderValue / rotaryDivider) % keymap.size();
-    led_setColor(this->currentLayerColor());
-    gfx_println("Layer: \n" + this->currentLayerName());
+    user_tasks();
 
     std::vector<uint32_t> layer = this->currentLayer();
     for(int i = 0; i < layer.size(); i++) {
         uint32_t state = this->_matrix.GetState(i);
-        event_type_t event = KUP;
-        if(last_scan.at(i) != state) {
-            if(state == 1) {
-                event = KDN;
-            }
+        event_type_t event = REST;
+
+        if(((last_scan & 0b1 << i) > 0) != state) {
+            event = event_type_t(state + 1);
         }
 
-        // keycode_handler(layer.at(i), event, this->consumer, this->keyboard);
         keycode_handler({
             .type = event,
             .keycode = layer.at(i),
 
+            .resolved = false,
+
             .consumer = this->consumer,
-            .keyboard = this->keyboard
+            .keyboard = this->keyboard,
+
+            .layer = &this->ActiveLayer,
+            .layers = uint16_t(this->keymap.size()),
+
+            .layername = this->currentLayerName(),
+            .layercolor = this->currentLayerColor(),
         });
     }
 
     this->last_scan = _matrix.GetStates();
+}
+
+void Keymap::setLayer(uint32_t layer) {
+    this->ActiveLayer = layer;
+}
+
+std::vector<std::vector<uint32_t>> Keymap::getLayers() {
+    return this->keymap;
 }
 
 String Keymap::currentLayerName() {
@@ -100,4 +100,32 @@ uint32_t Keymap::currentLayerColor() {
     }else{
         return WHITE;
     }
+}
+
+void Keymap::user_tasks() {
+    uint16_t size = this->keymap.size();
+
+    event_t ev = {
+        .type = REST,
+        .keycode = 0,
+
+        .resolved = false,
+
+        .consumer = this->consumer,
+        .keyboard = this->keyboard,
+        .layer = &this->ActiveLayer,
+        .layers = size,
+        .layername = this->currentLayerName(),
+        .layercolor = this->currentLayerColor(),
+    };
+
+    #ifdef ENCODER_ENABLE
+        ev.type = ENCODER_TICK;
+        task_user_encoder_tick(ev);
+    #endif
+
+    #ifdef DISPLAY_ENABLE
+        ev.type = DISPLAY_TICK;
+        task_user_display_tick(ev);
+    #endif
 }
