@@ -1,5 +1,6 @@
 
 #include "handler/handler.hpp"
+#include "keycodes/keycodes.hpp"
 #include <Arduino.h>
 #include "manager/manager.hpp"
 #include "config/config.hpp"

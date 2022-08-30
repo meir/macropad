@@ -10,9 +10,10 @@
 #include "Adafruit_TestBed.h"
 
 void gfx_init();
+void gfx_reset();
 void gfx_draw();
 void gfx_print(String text);
 void gfx_println(String text);
-void gfx_reset();
 void led_setColor(uint32_t color);
+GFXcanvas16 canvas();
 Adafruit_ST7789 tft();

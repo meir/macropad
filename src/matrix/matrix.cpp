@@ -36,7 +36,7 @@ void Matrix::Scan() {
             #ifdef DEBUG
             gfx_println("(" + String(c, DEC) + ", " + String(r, DEC) + ")[" + String(r * _columns.size() + c, DEC) + "] = " + String(!state, DEC));
             #endif
-            // 0b0001 ^ (-0b0000 ^ 0b0001) & (1 << 0)
+
             int pos = (r * _columns.size() + c);
             _states = _states ^ ((!state << pos) ^ _states) & (0b1 << pos);
         }

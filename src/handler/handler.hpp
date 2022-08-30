@@ -46,6 +46,15 @@ extern keycode_callbacks_t keycode_callbacks[];
 
 void keycode_handler(event_t event);
 
+typedef std::vector<std::vector<uint32_t>> KEYMAP;
+KEYMAP keymap(KEYMAP pref) __attribute__ ((weak));
+
+typedef std::vector<String> LAYER_NAMES;
+LAYER_NAMES layer_names(LAYER_NAMES pref) __attribute__ ((weak));
+
+typedef std::vector<uint32_t> LAYER_COLORS;
+LAYER_COLORS layer_colors(LAYER_COLORS pref) __attribute__ ((weak));
+
 void task_user_keycode(event_t event) __attribute__ ((weak));
 void task_user_encoder_tick(event_t event) __attribute__ ((weak));
 void task_user_display_tick(event_t event) __attribute__ ((weak));

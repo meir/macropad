@@ -71,8 +71,9 @@ void keycode_handler(event_t event) {
                 break;
             }
         case SWITCH_LAYER:
-
-            break;
+            {
+                break;
+            }
 
         default:
             {

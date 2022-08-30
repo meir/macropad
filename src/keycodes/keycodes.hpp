@@ -77,113 +77,135 @@ enum control_keycodes : uint32_t {
     KEY_LAYER_SWITCH_MAX        = 0x07FF << 16,
     KEY_LAYER_TOGGLE_MIN        = 0x0800 << 16,
     KEY_LAYER_TOGGLE_MAX        = 0x08FF << 16,
-    KEY_CUSTOM_START            = 0x0900 << 16,
+    KC_EXTEND                   = 0x0900 << 16,
 };
 
 #define LAYER_HOLD(layer)   (KEY_LAYER_HOLD_MIN   | ((layer) & 0xF << 4))
 #define LAYER_SWITCH(layer) (KEY_LAYER_SWITCH_MIN | ((layer) & 0xF << 4))
 #define LAYER_TOGGLE(layer) (KEY_LAYER_TOGGLE_MIN | ((layer) & 0xF << 4))
 
-#define LH(layer) LAYER_HOLD(layer)
-#define LS(layer) LAYER_SWITCH(layer)
-#define LT(layer) LAYER_TOGGLE(layer)
+#define HL(layer) LAYER_HOLD(layer)
+#define SL(layer) LAYER_SWITCH(layer)
+#define TL(layer) LAYER_TOGGLE(layer)
+
+#define MOD_LCTL 0x01
+#define MOD_LSFT 0x02
+#define MOD_LALT 0x04
+#define MOD_LGUI 0x08
+#define MOD_RCTL 0x10
+#define MOD_RSFT 0x20
+#define MOD_RALT 0x40
+#define MOD_RGUI 0x80
+
+#define SELECT_MODS(keycode) (keycode >> 24)
+#define STRIP_MODS(keycode) (keycode & ~(0xFF << 24))
+#define APPLY_MODS(mods, keycode) (mods << 24 | keycode)
+
+#define LC(keycode) APPLY_MODS(MOD_LCTL, keycode)
+#define LS(keycode) APPLY_MODS(MOD_LSFT, keycode)
+#define LA(keycode) APPLY_MODS(MOD_LALT, keycode)
+#define LG(keycode) APPLY_MODS(MOD_LGUI, keycode)
+#define RC(keycode) APPLY_MODS(MOD_RCTL, keycode)
+#define RS(keycode) APPLY_MODS(MOD_RSFT, keycode)
+#define RA(keycode) APPLY_MODS(MOD_RALT, keycode)
+#define RG(keycode) APPLY_MODS(MOD_RGUI, keycode)
 
 enum hid_keyboard_keypad_usage : uint32_t {
     ____ = TO_DEFAULT(0x00),
     KC_NO = TO_DEFAULT(0x00),
-    KC_ROLL_OVER,
-    KC_POST_FAIL,
-    KC_UNDEFINED,
-    KC_A,
-    KC_B,
-    KC_C,
-    KC_D,
-    KC_E,
-    KC_F,
-    KC_G,
-    KC_H,
-    KC_I,
-    KC_J,
-    KC_K,
-    KC_L,
-    KC_M,
-    KC_N,
-    KC_O,
-    KC_P,
-    KC_Q,
-    KC_R,
-    KC_S,
-    KC_T,
-    KC_U,
-    KC_V,
-    KC_W,
-    KC_X,
-    KC_Y,
-    KC_Z,
-    KC_1,
-    KC_2,
-    KC_3,
-    KC_4,
-    KC_5,
-    KC_6,
-    KC_7,
-    KC_8,
-    KC_9,
-    KC_0,
-    KC_ENTER,
-    KC_ESCAPE,
-    KC_BACKSPACE,
-    KC_TAB,
-    KC_SPACE,
-    KC_MINUS,
-    KC_EQUAL,
-    KC_LEFT_BRACKET,
-    KC_RIGHT_BRACKET,
-    KC_BACKSLASH,
-    KC_NONUS_HASH,
-    KC_SEMICOLON,
-    KC_QUOTE,
-    KC_GRAVE,
-    KC_COMMA,
-    KC_DOT,
-    KC_SLASH,
-    KC_CAPS_LOCK,
-    KC_F1,
-    KC_F2,
-    KC_F3,
-    KC_F4,
-    KC_F5,
-    KC_F6,
-    KC_F7,
-    KC_F8,
-    KC_F9,
-    KC_F10,
-    KC_F11,
-    KC_F12,
-    KC_PRINT_SCREEN,
-    KC_SCROLL_LOCK,
-    KC_PAUSE,
-    KC_INSERT,
-    KC_HOME,
-    KC_PAGE_UP,
-    KC_DELETE,
-    KC_END,
-    KC_PAGE_DOWN,
-    KC_RIGHT,
-    KC_LEFT,
-    KC_DOWN,
-    KC_UP,
-    KC_NUM_LOCK,
-    KC_KP_SLASH,
-    KC_KP_ASTERISK,
-    KC_KP_MINUS,
-    KC_KP_PLUS,
-    KC_KP_ENTER,
-    KC_KP_1,
-    KC_KP_2,
-    KC_KP_3,
-    KC_KP_4,
-    KC_KP_5,
+    KC_ROLL_OVER, // 0x01
+    KC_POST_FAIL, // 0x02
+    KC_UNDEFINED, // 0x03
+    KC_A, // 0x04
+    KC_B, // 0x05
+    KC_C, // 0x06
+    KC_D, // 0x07
+    KC_E, // 0x08
+    KC_F, // 0x09
+    KC_G, // 0x0A
+    KC_H, // 0x0B 
+    KC_I, // 0x0C
+    KC_J, // 0x0D
+    KC_K, // 0x0E
+    KC_L, // 0x0F
+    KC_M, // 0x10
+    KC_N, // 0x11
+    KC_O, // 0x12
+    KC_P, // 0x13
+    KC_Q, // 0x14
+    KC_R, // 0x15
+    KC_S, // 0x16
+    KC_T, // 0x17
+    KC_U, // 0x18
+    KC_V, // 0x19
+    KC_W, // 0x1A
+    KC_X, // 0x1B
+    KC_Y, // 0x1C
+    KC_Z, // 0x1D
+    KC_1, // 0x1E
+    KC_2, // 0x1F
+    KC_3, // 0x20
+    KC_4, // 0x21
+    KC_5, // 0x22
+    KC_6, // 0x23
+    KC_7, // 0x24
+    KC_8, // 0x25
+    KC_9, // 0x26
+    KC_0, // 0x27
+    KC_ENTER, // 0x28
+    KC_ESCAPE, // 0x29
+    KC_BACKSPACE, // 0x2A
+    KC_TAB, // 0x2B
+    KC_SPACE, // 0x2C
+    KC_MINUS, // 0x2D
+    KC_EQUAL, // 0x2E
+    KC_LEFT_BRACKET, // 0x2F
+    KC_RIGHT_BRACKET, // 0x30
+    KC_BACKSLASH, // 0x31
+    KC_NONUS_HASH, // 0x32
+    KC_SEMICOLON, // 0x33
+    KC_QUOTE, // 0x34
+    KC_GRAVE, // 0x35
+    KC_COMMA, // 0x36
+    KC_DOT, // 0x37
+    KC_SLASH, // 0x38
+    KC_CAPS_LOCK, // 0x39
+    KC_F1, // 0x3A
+    KC_F2, // 0x3B
+    KC_F3, // 0x3C
+    KC_F4, // 0x3D
+    KC_F5, // 0x3E
+    KC_F6, // 0x3F
+    KC_F7, // 0x40
+    KC_F8, // 0x41
+    KC_F9, // 0x42
+    KC_F10, // 0x43
+    KC_F11, // 0x44
+    KC_F12, // 0x45
+    KC_PRINT_SCREEN, // 0x46
+    KC_SCROLL_LOCK, // 0x47
+    KC_PAUSE, // 0x48
+    KC_INSERT, // 0x49
+    KC_HOME, // 0x4A
+    KC_PAGE_UP, // 0x4B
+    KC_DELETE, // 0x4C
+    KC_END, // 0x4D
+    KC_PAGE_DOWN, // 0x4E
+    KC_RIGHT, // 0x4F
+    KC_LEFT, // 0x50
+    KC_DOWN, // 0x51
+    KC_UP, // 0x52
+    KC_NUM_LOCK, // 0x53
+    KC_KP_SLASH, // 0x54
+    KC_KP_ASTERISK, // 0x55
+    KC_KP_MINUS, // 0x56
+    KC_KP_PLUS, // 0x57
+    KC_KP_ENTER, // 0x58
+    KC_KP_1, // 0x59
+    KC_KP_2, // 0x5A
+    KC_KP_3, // 0x5B
+    KC_KP_4, // 0x5C
+    KC_KP_5, // 0x5D
     KC_KP_6,
     KC_KP_7,
     KC_KP_8,
@@ -255,6 +277,53 @@ enum hid_keyboard_keypad_usage : uint32_t {
     KC_CLEAR_AGAIN,
     KC_CRSEL,
     KC_EXSEL,
+
+    KC_KP_00 = TO_DEFAULT(0xB0),
+    KC_KP_000,
+    KC_THOUSANDS_SEPARATOR,
+    KC_DECIMAL_SEPARATOR,
+    KC_CURRENCY_UNIT,
+    KC_CURRENCY_SUB_UNIT,
+    KC_KP_LEFT_PAREN,
+    KC_KP_RIGHT_PAREN,
+    KC_KP_LEFT_BRACE,
+    KC_KP_RIGHT_BRACE,
+    KC_KP_TAB,
+    KC_KP_BACKSPACE,
+    KC_KP_A,
+    KC_KP_B,
+    KC_KP_C,
+    KC_KP_D,
+    KC_KP_E,
+    KC_KP_F,
+    KC_KP_XOR,
+    KC_KP_HAT,
+    KC_KP_PERCENT,
+    KC_KP_LESS,
+    KC_KP_GREATER,
+    KC_KP_AMPERSAND,
+    KC_KP_DBLAMPERSAND,
+    KC_KP_VERTICAL_BAR,
+    KC_KP_DBLVERTICAL_BAR,
+    KC_KP_COLON,
+    KC_KP_HASH,
+    KC_KP_SPACE,
+    KC_KP_AT,
+    KC_KP_EXCLAM,
+    KC_KP_MEM_STORE,
+    KC_KP_MEM_RECALL,
+    KC_KP_MEM_CLEAR,
+    KC_KP_MEM_ADD,
+    KC_KP_MEM_SUBTRACT,
+    KC_KP_MEM_MULTIPLY,
+    KC_KP_MEM_DIVIDE,
+    KC_KP_PLUS_MINUS,
+    KC_KP_CLEAR,
+    KC_KP_CLEAR_ENTRY,
+    KC_KP_BINARY,
+    KC_KP_OCTAL,
+    KC_KP_DECIMAL,
+    KC_KP_HEXADECIMAL,
 
     KC_LEFT_CTRL = TO_DEFAULT(0xE0),
     KC_LEFT_SHIFT,

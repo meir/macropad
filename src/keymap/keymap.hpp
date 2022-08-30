@@ -4,6 +4,7 @@
 #include "../matrix/matrix.hpp"
 #include "../config/config.hpp"
 #include "../handler/handler.hpp"
+#include "../keycodes/keycodes.hpp"
 
 #include "../graphics/graphics.hpp"
 
@@ -22,13 +23,8 @@ class Keymap
         USBHIDConsumerControl consumer;
         USBHIDKeyboard keyboard;
 
-        std::vector<std::vector<uint32_t>> keymap;
-        std::vector<String> layerNames;
-        std::vector<uint32_t> layerColors;
-
         byte last_scan;
         
-        // Keymap map;
         // WebServer server;
         // Preferences preferences;
 

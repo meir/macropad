@@ -6,24 +6,6 @@ Keymap::Keymap(Matrix matrix, USBHIDConsumerControl _consumer, USBHIDKeyboard _k
     this->consumer = _consumer;
     this->keyboard = _keyboard;
 
-    #ifdef KEYMAP
-    this->keymap = KEYMAP;
-    #else
-    this->keymap = {};
-    #endif
-
-    #ifdef LAYER_NAMES
-    this->layerNames = LAYER_NAMES;
-    #else
-    this->layerNames = {};
-    #endif
-
-    #ifdef LAYER_COLORS
-    this->layerColors = LAYER_COLORS;
-    #else
-    this->layerColors = {};
-    #endif
-
     this->_matrix.Scan();
     this->last_scan = this->_matrix.GetStates();
 }
@@ -60,7 +42,7 @@ void Keymap::run() {
             .keyboard = this->keyboard,
 
             .layer = &this->ActiveLayer,
-            .layers = uint16_t(this->keymap.size()),
+            .layers = uint16_t(keymap({}).size()),
 
             .layername = this->currentLayerName(),
             .layercolor = this->currentLayerColor(),
@@ -75,35 +57,35 @@ void Keymap::setLayer(uint32_t layer) {
 }
 
 std::vector<std::vector<uint32_t>> Keymap::getLayers() {
-    return this->keymap;
+    return keymap({});
 }
 
 String Keymap::currentLayerName() {
-    if(layerNames.size() > this->ActiveLayer) {
-        return layerNames.at(this->ActiveLayer);
+    if(layer_names({}).size() > this->ActiveLayer) {
+        return layer_names({}).at(this->ActiveLayer);
     }else{
         return String(this->ActiveLayer, DEC);
     }
 }
 
 std::vector<uint32_t> Keymap::currentLayer() {
-    if(this->ActiveLayer >= 0 && this->ActiveLayer < keymap.size()) {
-        return keymap.at(this->ActiveLayer);
+    if(this->ActiveLayer >= 0 && this->ActiveLayer < keymap({}).size()) {
+        return keymap({}).at(this->ActiveLayer);
     }
     this->ActiveLayer = 0;
-    return keymap.at(0);
+    return keymap({}).at(0);
 }
 
 uint32_t Keymap::currentLayerColor() {
-    if(layerColors.size() > this->ActiveLayer) {
-        return layerColors.at(this->ActiveLayer);
+    if(layer_colors({}).size() > this->ActiveLayer) {
+        return layer_colors({}).at(this->ActiveLayer);
     }else{
         return WHITE;
     }
 }
 
 void Keymap::user_tasks() {
-    uint16_t size = this->keymap.size();
+    uint16_t size = keymap({}).size();
 
     event_t ev = {
         .type = REST,
