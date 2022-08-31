@@ -19,7 +19,7 @@ class Keymap
 {
     private:
         Matrix _matrix;
-        uint16_t ActiveLayer;
+        int16_t ActiveLayer;
         USBHIDConsumerControl consumer;
         USBHIDKeyboard keyboard;
 

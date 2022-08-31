@@ -30,7 +30,7 @@ KEYMAP keymap(KEYMAP pref) {
         },
         {
             KC_MEDIA_SCAN_PREVIOUS, KC_MEDIA_PLAY_PAUSE, KC_MEDIA_SCAN_NEXT, 
-            ____, LC(KC_Z), LC(KC_Y)
+            ____, KC_Z, KC_LEFT_GUI,
         },
         {
             MORNING, MORNING, MORNING, 
@@ -53,18 +53,26 @@ void task_user_keycode(event_t event) {
     switch(event.keycode) {
         case MORNING:
             if(event.type != KEY_DOWN) return;
-            event.keyboard.println("Morning");
+            event.keyboard.println("morning");
+            break;
     }
 };
 
+int16_t encoder_old_value = 0;
+
 void task_user_encoder_tick(event_t event) {
-    uint32_t encoderValue = encoder.read();
-    uint32_t activeLayer = (encoderValue / ROTARY_DIVIDER) % event.layers;
-    (*event.layer) = activeLayer;
+    int16_t encoder_value = encoder.read();
+   
+    if(encoder_value == encoder_old_value) return;
+    int16_t offset = (encoder_value - encoder_old_value);
+    int16_t layer_change = (offset / ROTARY_DIVIDER) % event.layers;
+    
+    if(layer_change == 0) return;
+    (*event.layer) += layer_change;
+    encoder_old_value = encoder_value;
 }
 
 void task_user_display_tick(event_t event) {
-    canvas().setTextColor(event.layercolor);
     gfx_println(" " + event.layername);
     led_setColor(event.layercolor);
 }

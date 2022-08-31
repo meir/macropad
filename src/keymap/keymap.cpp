@@ -24,7 +24,7 @@ void Keymap::run() {
     user_tasks();
 
     std::vector<uint32_t> layer = this->currentLayer();
-    for(int i = 0; i < layer.size(); i++) {
+    for(uint32_t i = 0; i < layer.size(); i++) {
         uint32_t state = this->_matrix.GetState(i);
         event_type_t event = REST;
 
@@ -34,6 +34,7 @@ void Keymap::run() {
 
         keycode_handler({
             .type = event,
+            .id = i,
             .keycode = layer.at(i),
 
             .resolved = false,
@@ -43,6 +44,7 @@ void Keymap::run() {
 
             .layer = &this->ActiveLayer,
             .layers = uint16_t(keymap({}).size()),
+            .virtual_layer = 0,
 
             .layername = this->currentLayerName(),
             .layercolor = this->currentLayerColor(),
@@ -71,6 +73,9 @@ String Keymap::currentLayerName() {
 std::vector<uint32_t> Keymap::currentLayer() {
     if(this->ActiveLayer >= 0 && this->ActiveLayer < keymap({}).size()) {
         return keymap({}).at(this->ActiveLayer);
+    }else if(this->ActiveLayer < 0) {
+        this->ActiveLayer = keymap({}).size() - 1;
+        return keymap({}).at(this->ActiveLayer);
     }
     this->ActiveLayer = 0;
     return keymap({}).at(0);
@@ -89,6 +94,7 @@ void Keymap::user_tasks() {
 
     event_t ev = {
         .type = REST,
+        .id = 0,
         .keycode = 0,
 
         .resolved = false,
@@ -97,6 +103,8 @@ void Keymap::user_tasks() {
         .keyboard = this->keyboard,
         .layer = &this->ActiveLayer,
         .layers = size,
+        .virtual_layer = 0,
+
         .layername = this->currentLayerName(),
         .layercolor = this->currentLayerColor(),
     };

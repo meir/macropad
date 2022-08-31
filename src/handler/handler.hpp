@@ -17,18 +17,21 @@ enum event_type_t {
     KEY_DOWN,
     ENCODER_TICK,
     DISPLAY_TICK,
+    VIRTUAL_LAYER_SWITCH,
 };
 
 struct event_t {
     event_type_t type;
+    uint32_t id;
     uint32_t keycode;
 
     bool resolved;
 
     USBHIDConsumerControl consumer;
     USBHIDKeyboard keyboard;
-    uint16_t* layer;
+    int16_t* layer;
     uint16_t layers;
+    uint16_t virtual_layer;
 
     String layername;
     uint32_t layercolor;
@@ -43,6 +46,18 @@ typedef struct {
 } keycode_callbacks_t;
 
 extern keycode_callbacks_t keycode_callbacks[];
+
+enum layer_event_type_t {
+    LAYER_HLD = 0,
+    LAYER_OTK,
+    LAYER_TOG,
+};
+
+struct layer_event_t {
+    layer_event_type_t type;
+    int16_t layer;
+    uint32_t key_id;
+};
 
 void keycode_handler(event_t event);
 

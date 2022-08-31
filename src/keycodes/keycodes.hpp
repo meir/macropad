@@ -10,19 +10,41 @@ enum keycode_type : uint8_t {
     KT_RGB              = 5,
     KT_MOUSE            = 6,
     KT_LAYER_HOLD       = 7,
-    KT_LAYER_SWITCH     = 8,
+    KT_LAYER_TAP        = 8,
     KT_LAYER_TOGGLE     = 9,
 };
 
-#define TO_DEFAULT(key) (key & KEY_DEFAULT_MIN)
-#define TO_MACRO(key) (key & KEY_MACRO_MIN)
-#define TO_FUNCTION(key) (key & KEY_FUNCTION_MIN)
-#define TO_MEDIA(key) (key & KEY_MEDIA_MIN)
-#define TO_RGB(key) (key & KEY_RGB_MIN)
-#define TO_MOUSE(key) (key & KEY_MOUSE_MIN)
-#define TO_LAYER_HOLD(key) (key & KEY_LAYER_HOLD_MIN)
-#define TO_LAYER_SWITCH(key) (key & KEY_LAYER_SWITCH_MIN)
-#define TO_LAYER_TOGGLE(key) (key & KEY_LAYER_TOGGLE_MIN)
+enum control_keycodes : uint32_t {
+    KEY_DEFAULT_MIN             = 0x0000 << 8,
+    KEY_DEFAULT_MAX             = 0x00FF << 8,
+    KEY_MACRO_MIN               = 0x0100 << 8,
+    KEY_MACRO_MAX               = 0x01FF << 8,
+    KEY_FUNCTION_MIN            = 0x0200 << 8,
+    KEY_FUNCTION_MAX            = 0x02FF << 8,
+    KEY_MEDIA_MIN               = 0x0300 << 8,
+    KEY_MEDIA_MAX               = 0x03FF << 8,
+    KEY_RGB_MIN                 = 0x0400 << 8,
+    KEY_RGB_MAX                 = 0x04FF << 8,
+    KEY_MOUSE_MIN               = 0x0500 << 8,
+    KEY_MOUSE_MAX               = 0x05FF << 8,
+    KEY_LAYER_HOLD_MIN          = 0x0600 << 8,
+    KEY_LAYER_HOLD_MAX          = 0x06FF << 8,
+    KEY_LAYER_TAP_MIN           = 0x0700 << 8,
+    KEY_LAYER_TAP_MAX           = 0x07FF << 8,
+    KEY_LAYER_TOGGLE_MIN        = 0x0800 << 8,
+    KEY_LAYER_TOGGLE_MAX        = 0x08FF << 8,
+    KC_EXTEND                   = 0x0900 << 8,
+};
+
+#define TO_DEFAULT(key) (key | KEY_DEFAULT_MIN)
+#define TO_MACRO(key) (key | KEY_MACRO_MIN)
+#define TO_FUNCTION(key) (key | KEY_FUNCTION_MIN)
+#define TO_MEDIA(key) (key | KEY_MEDIA_MIN)
+#define TO_RGB(key) (key | KEY_RGB_MIN)
+#define TO_MOUSE(key) (key | KEY_MOUSE_MIN)
+#define TO_LAYER_HOLD(key) (key | KEY_LAYER_HOLD_MIN)
+#define TO_LAYER_TAP(key) (key | KEY_LAYER_TAP_MIN)
+#define TO_LAYER_TOGGLE(key) (key | KEY_LAYER_TOGGLE_MIN)
 
 #define FROM_DEFAULT(key) (key ^ KEY_DEFAULT_MIN)
 #define FROM_MACRO(key) (key ^ KEY_MACRO_MIN)
@@ -31,7 +53,7 @@ enum keycode_type : uint8_t {
 #define FROM_RGB(key) (key ^ KEY_RGB_MIN)
 #define FROM_MOUSE(key) (key ^ KEY_MOUSE_MIN)
 #define FROM_LAYER_HOLD(key) (key ^ KEY_LAYER_HOLD_MIN)
-#define FROM_LAYER_SWITCH(key) (key ^ KEY_LAYER_SWITCH_MIN)
+#define FROM_LAYER_TAP(key) (key ^ KEY_LAYER_TAP_MIN)
 #define FROM_LAYER_TOGGLE(key) (key ^ KEY_LAYER_TOGGLE_MIN)
 
 #define IS_DEFAULT(key) (key >= KEY_DEFAULT_MIN && key <= KEY_DEFAULT_MAX)
@@ -41,10 +63,10 @@ enum keycode_type : uint8_t {
 #define IS_RGB(key) (key >= KEY_RGB_MIN && key <= KEY_RGB_MAX)
 #define IS_MOUSE(key) (key >= KEY_MOUSE_MIN && key <= KEY_MOUSE_MAX)
 #define IS_LAYER_HOLD(key) (key >= KEY_LAYER_HOLD_MIN && key <= KEY_LAYER_HOLD_MAX)
-#define IS_LAYER_SWITCH(key) (key >= KEY_LAYER_SWITCH_MIN && key <= KEY_LAYER_SWITCH_MAX)
+#define IS_LAYER_TAP(key) (key >= KEY_LAYER_TAP_MIN && key <= KEY_LAYER_TAP_MAX)
 #define IS_LAYER_TOGGLE(key) (key >= KEY_LAYER_TOGGLE_MIN && key <= KEY_LAYER_TOGGLE_MAX)
 
-#define IS_LAYER(key) (IS_LAYER_HOLD(key) || IS_LAYER_SWITCH(key) || IS_LAYER_TOGGLE(key))
+#define IS_LAYER(key) (IS_LAYER_HOLD(key) || IS_LAYER_TAP(key) || IS_LAYER_TOGGLE(key))
 
 #define SWITCH_DEFAULT KEY_DEFAULT_MIN...KEY_DEFAULT_MAX
 #define SWITCH_MACRO KEY_MACRO_MIN...KEY_MACRO_MAX
@@ -53,40 +75,18 @@ enum keycode_type : uint8_t {
 #define SWITCH_RGB KEY_RGB_MIN...KEY_RGB_MAX
 #define SWITCH_MOUSE KEY_MOUSE_MIN...KEY_MOUSE_MAX
 #define SWITCH_LAYER_HOLD KEY_LAYER_HOLD_MIN...KEY_LAYER_HOLD_MAX
-#define SWITCH_LAYER_SWITCH KEY_LAYER_SWITCH_MIN...KEY_LAYER_SWITCH_MAX
+#define SWITCH_LAYER_TAP KEY_LAYER_TAP_MIN...KEY_LAYER_TAP_MAX
 #define SWITCH_LAYER_TOGGLE KEY_LAYER_TOGGLE_MIN...KEY_LAYER_TOGGLE_MAX
 
 #define SWITCH_LAYER KEY_LAYER_HOLD_MIN...KEY_LAYER_TOGGLE_MAX
 
-enum control_keycodes : uint32_t {
-    KEY_DEFAULT_MIN             = 0x0000 << 16,
-    KEY_DEFAULT_MAX             = 0x00FF << 16,
-    KEY_MACRO_MIN               = 0x0100 << 16,
-    KEY_MACRO_MAX               = 0x01FF << 16,
-    KEY_FUNCTION_MIN            = 0x0200 << 16,
-    KEY_FUNCTION_MAX            = 0x02FF << 16,
-    KEY_MEDIA_MIN               = 0x0300 << 16,
-    KEY_MEDIA_MAX               = 0x03FF << 16,
-    KEY_RGB_MIN                 = 0x0400 << 16,
-    KEY_RGB_MAX                 = 0x04FF << 16,
-    KEY_MOUSE_MIN               = 0x0500 << 16,
-    KEY_MOUSE_MAX               = 0x05FF << 16,
-    KEY_LAYER_HOLD_MIN          = 0x0600 << 16,
-    KEY_LAYER_HOLD_MAX          = 0x06FF << 16,
-    KEY_LAYER_SWITCH_MIN        = 0x0700 << 16,
-    KEY_LAYER_SWITCH_MAX        = 0x07FF << 16,
-    KEY_LAYER_TOGGLE_MIN        = 0x0800 << 16,
-    KEY_LAYER_TOGGLE_MAX        = 0x08FF << 16,
-    KC_EXTEND                   = 0x0900 << 16,
-};
-
 #define LAYER_HOLD(layer)   (KEY_LAYER_HOLD_MIN   | ((layer) & 0xF << 4))
-#define LAYER_SWITCH(layer) (KEY_LAYER_SWITCH_MIN | ((layer) & 0xF << 4))
+#define LAYER_TAP(layer) (KEY_LAYER_TAP_MIN | ((layer) & 0xF << 4))
 #define LAYER_TOGGLE(layer) (KEY_LAYER_TOGGLE_MIN | ((layer) & 0xF << 4))
 
-#define HL(layer) LAYER_HOLD(layer)
-#define SL(layer) LAYER_SWITCH(layer)
-#define TL(layer) LAYER_TOGGLE(layer)
+#define HLDL(layer) LAYER_HOLD(layer)
+#define TAPL(layer) LAYER_TAP(layer)
+#define TOGL(layer) LAYER_TOGGLE(layer)
 
 #define MOD_LCTL 0x01
 #define MOD_LSFT 0x02
@@ -349,7 +349,7 @@ enum media_keycodes : uint32_t {
     KC_MEDIA_WIRELESS_RADIO_CONTROLS           = TO_MEDIA(0x000C),
     KC_MEDIA_WIRELESS_RADIO_BUTTONS            = TO_MEDIA(0x00C6),
     KC_MEDIA_WIRELESS_RADIO_LED                = TO_MEDIA(0x00C7),
-    KC_MEDIA_WIRELESS_RADIO_SLIDER_SWITCH      = TO_MEDIA(0x00C8),
+    KC_MEDIA_WIRELESS_RADIO_SLIDER_TAP      = TO_MEDIA(0x00C8),
 
 // Media Control
     KC_MEDIA_PLAY_PAUSE                        = TO_MEDIA(0x00CD),

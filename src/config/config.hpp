@@ -10,6 +10,7 @@
 
 #define ENCODER_ENABLE
 #define DISPLAY_ENABLE
+#define WEBSITE_ENABLE
 
 #define NETWORK_SSID ""
 #define NETWORK_PASS ""

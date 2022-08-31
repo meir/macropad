@@ -2,7 +2,7 @@
 #include "graphics.hpp"
 
 Adafruit_ST7789 _tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
-GFXcanvas16 _canvas(_tft.width(), _tft.height());
+GFXcanvas16 _canvas(135, 240);
 
 extern Adafruit_TestBed TB;
 
@@ -22,8 +22,10 @@ void gfx_init() {
   // initialize TFT
   _tft.init(135, 240); // Init ST7789 240x135
   _tft.setRotation(2);
-  _tft.setTextSize(2);
+
+  _canvas.setTextSize(2);
   _canvas.fillScreen(ST77XX_BLACK);
+  _canvas.setTextColor(ST77XX_WHITE);
 }
 
 void gfx_reset() {
