@@ -9,8 +9,8 @@
 
 Encoder encoder(ENCODER_PIN_A, ENCODER_PIN_B);
 
-enum custom_keys : uint32_t {
-    MORNING = KC_EXTEND,
+enum custom_keys : keycode_t {
+    MORNING = KC_CUSTOM,
     UNDO,
     REDO,
 };
@@ -28,11 +28,11 @@ KEYMAP keymap(KEYMAP pref) {
         },
         {
             KC_Q,   KC_W,   KC_E,   
-            ____, KC_R,   KC_LEFT_CTRL
+            ____, KC_R,   KC_LCTRL
         },
         {
-            KC_MEDIA_SCAN_PREVIOUS, KC_MEDIA_PLAY_PAUSE, KC_MEDIA_SCAN_NEXT, 
-            ____, LC(KC_Z), LC(KC_Y),
+            KC_PREV_TRACK, KC_PLAY_PAUSE, KC_NEXT_TRACK, 
+            ____, UNDO, REDO
         },
         {
             MORNING, MORNING, MORNING, 
@@ -51,33 +51,45 @@ LAYER_COLORS layer_colors(LAYER_COLORS pref) {
     return {0x7e2bcc, 0xd9276b, 0xebeb54, 0x2b2b2b, 0xffffff};
 }
 
-void preinit_usb() {
-}
-
-void task_user_keycode(event_t event) {
-    switch(event.keycode) {
+void task_user_keycode_custom(event_t event) {
+    switch(event.keydata.key) {
         case MORNING:
-            if(event.type != KEY_DOWN) return;
-            event.keyboard.println("morning");
-            break;
+            if(event.type != EVENT_KEY_DOWN) return;
+            event.methods.println("morning");
+            return;
+        case UNDO:
+            switch(event.type) {
+                case EVENT_KEY_DOWN:
+                    event.methods.press(KC_LCTRL);
+                    event.methods.press(KC_Z);
+                    return;
+                case EVENT_KEY_UP:
+                    event.methods.release(KC_Z);
+                    event.methods.release(KC_LCTRL);
+                    return;
+            }
+        case REDO:
+            switch(event.type) {
+                case EVENT_KEY_DOWN:
+                    event.methods.press(KC_LCTRL);
+                    event.methods.press(KC_Y);
+                    return;
+                case EVENT_KEY_UP:
+                    event.methods.release(KC_Y);
+                    event.methods.release(KC_LCTRL);
+                    return;
+            }
     }
 };
 
-int16_t encoder_old_value = 0;
-
 void task_user_encoder_tick(event_t event) {
-    int16_t encoder_value = encoder.read();
-   
-    if(encoder_value == encoder_old_value) return;
-    int16_t offset = (encoder_value - encoder_old_value);
-    int16_t layer_change = (offset / ROTARY_DIVIDER) % event.layers;
-    
-    if(layer_change == 0) return;
-    (*event.layer) += layer_change;
-    encoder_old_value = encoder_value;
+    uint16_t encoder_value = encoder.read();
+    uint16_t layer_change = (encoder_value / ROTARY_DIVIDER) % event.layer_count;
+    (*event.layer) = layer_change;
 }
 
 void task_user_display_tick(event_t event) {
-    gfx_println(" " + event.layername);
-    led_setColor(event.layercolor);
+    get_canvas()->setTextSize(2);
+    get_canvas()->println(event.methods.get_layer_name(*event.layer));
+    gfx_set_led(0, event.methods.get_layer_color(*event.layer));
 }

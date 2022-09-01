@@ -1,16 +1,19 @@
 
 #pragma once
 
-#include "../handler/handler.hpp"
-#include "../keycodes/keycodes.hpp"
-#include "../graphics/graphics.hpp"
+#include "../internal/keycode/keycodes.hpp"
+#include "../internal/graphics/graphics.hpp"
 
 #define MATRIX_COLUMNS { A0, A1 };
 #define MATRIX_ROWS { A2, A3, A4 };
 
-#define ENCODER_ENABLE
-#define DISPLAY_ENABLE
-#define WEBSITE_ENABLE
+#define NEOPIXEL_PIN PIN_NEOPIXEL 
+#define NUMPIXELS 1
+
+#define NEOPIXEL_ENABLED
+#define ENCODER_ENABLED
+#define DISPLAY_ENABLED
+#define WEBSITE_ENABLED
 
 #define NETWORK_SSID ""
 #define NETWORK_PASS ""
