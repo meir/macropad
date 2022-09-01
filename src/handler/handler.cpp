@@ -38,8 +38,8 @@ void keycode_handler(event_t event) {
                 if(event.resolved) break;
 
                 switch(event.type) {
-                    case KEY_DOWN: event.keyboard.pressRaw(event.keycode); break;
-                    case KEY_UP: event.keyboard.releaseRaw(event.keycode); break;
+                    case KEY_DOWN: press(event); break;
+                    case KEY_UP: release(event); break;
                 }
                 break;
             }
@@ -58,8 +58,8 @@ void keycode_handler(event_t event) {
                 if(event.resolved) break;
 
                 switch(event.type) {
-                    case KEY_DOWN: event.keyboard.pressRaw(event.keycode); break;
-                    case KEY_UP: event.keyboard.releaseRaw(event.keycode); break;
+                    case KEY_DOWN: press(event); break;
+                    case KEY_UP: release(event); break;
                 }
 
                 break;
@@ -146,5 +146,68 @@ void keycode_handler(event_t event) {
                 task_user_keycode(event);
                 if(event.resolved) break;
             }
+    }
+}
+
+void press(uint32_t key) {
+    event_t event;
+    event.type = KEY_DOWN;
+    event.keycode = key;
+    press(event);
+}
+
+void press(event_t event) {
+    uint8_t i;
+    uint32_t k = event.keycode;
+    if (k >= 0xE0 && k < 0xE8) {
+        // it's a modifier key
+        (*event.report).modifiers |= (1<<(k-0x80));
+    } else if (k && k < 0xA5) {
+        // Add k to the key report only if it's not already present
+        // and if there is an empty slot.
+        if ((*event.report).keys[0] != k && (*event.report).keys[1] != k && 
+            (*event.report).keys[2] != k && (*event.report).keys[3] != k &&
+            (*event.report).keys[4] != k && (*event.report).keys[5] != k) {
+            
+            for (i=0; i<6; i++) {
+                if ((*event.report).keys[i] == 0x00) {
+                    (*event.report).keys[i] = k;
+                    break;
+                }
+            }
+            if (i == 6) {
+                return;
+            }   
+        }
+    } else {
+        //not a modifier and not a key
+        return;
+    }
+}
+
+void release(uint32_t key) {
+    event_t event;
+    event.type = KEY_DOWN;
+    event.keycode = key;
+    release(event);
+}
+
+void release(event_t event) {
+    uint8_t i;
+    uint32_t k = event.keycode;
+    if (k >= 0xE0 && k < 0xE8) {
+        // it's a modifier key
+        (*event.report).modifiers &= ~(1<<(k-0x80));
+    } else if (k && k < 0xA5) {
+        // Test the key report to see if k is present.  Clear it if it exists.
+        // Check all positions in case the key is present more than once (which it shouldn't be)
+        for (i=0; i<6; i++) {
+            if (0 != k && (*event.report).keys[i] == k) {
+                (*event.report).keys[i] = 0x00;
+            }
+        }
+    } else {
+        //not a modifier and not a key
+        return;
     }
 }

@@ -19,3 +19,5 @@ class Manager
         Manager();
         void run();
 };
+
+void preinit_usb() __attribute__((weak));

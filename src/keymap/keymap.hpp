@@ -23,6 +23,8 @@ class Keymap
         USBHIDConsumerControl consumer;
         USBHIDKeyboard keyboard;
 
+        KeyReport report;
+
         byte last_scan;
         
         // WebServer server;

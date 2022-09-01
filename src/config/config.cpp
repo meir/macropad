@@ -11,6 +11,8 @@ Encoder encoder(ENCODER_PIN_A, ENCODER_PIN_B);
 
 enum custom_keys : uint32_t {
     MORNING = KC_EXTEND,
+    UNDO,
+    REDO,
 };
 
 KEYMAP keymap(KEYMAP pref) {
@@ -30,7 +32,7 @@ KEYMAP keymap(KEYMAP pref) {
         },
         {
             KC_MEDIA_SCAN_PREVIOUS, KC_MEDIA_PLAY_PAUSE, KC_MEDIA_SCAN_NEXT, 
-            ____, KC_Z, KC_LEFT_GUI,
+            ____, LC(KC_Z), LC(KC_Y),
         },
         {
             MORNING, MORNING, MORNING, 
@@ -47,6 +49,9 @@ LAYER_NAMES layer_names(LAYER_NAMES pref) {
 LAYER_COLORS layer_colors(LAYER_COLORS pref) {
     if(pref.size() != 0) return pref;
     return {0x7e2bcc, 0xd9276b, 0xebeb54, 0x2b2b2b, 0xffffff};
+}
+
+void preinit_usb() {
 }
 
 void task_user_keycode(event_t event) {

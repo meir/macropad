@@ -8,6 +8,11 @@ Keymap::Keymap(Matrix matrix, USBHIDConsumerControl _consumer, USBHIDKeyboard _k
 
     this->_matrix.Scan();
     this->last_scan = this->_matrix.GetStates();
+
+    report = *(new KeyReport());
+    report.reserved = 0;
+    report.modifiers = 0;
+    memset(report.keys, 0, 6);
 }
 
 Keymap::Keymap() {}
@@ -48,8 +53,12 @@ void Keymap::run() {
 
             .layername = this->currentLayerName(),
             .layercolor = this->currentLayerColor(),
+
+            .report = &this->report
         });
     }
+
+    this->keyboard.sendReport(&this->report);
 
     this->last_scan = _matrix.GetStates();
 }
@@ -107,6 +116,8 @@ void Keymap::user_tasks() {
 
         .layername = this->currentLayerName(),
         .layercolor = this->currentLayerColor(),
+
+        .report = &this->report
     };
 
     #ifdef ENCODER_ENABLE

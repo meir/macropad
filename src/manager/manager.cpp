@@ -11,6 +11,9 @@ Manager::Manager() {
     this->_matrix = *(new Matrix(columns, rows));
     this->_map = *(new Keymap(this->_matrix, ConsumerControl, Keyboard));
     _matrix.Init();
+
+    preinit_usb();
+
     ConsumerControl.begin();
     Keyboard.begin();
     USB.begin();

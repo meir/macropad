@@ -35,6 +35,8 @@ struct event_t {
 
     String layername;
     uint32_t layercolor;
+
+    KeyReport* report;
 };
 
 typedef bool (*key_checker_t)(event_t *event);
@@ -73,3 +75,8 @@ LAYER_COLORS layer_colors(LAYER_COLORS pref) __attribute__ ((weak));
 void task_user_keycode(event_t event) __attribute__ ((weak));
 void task_user_encoder_tick(event_t event) __attribute__ ((weak));
 void task_user_display_tick(event_t event) __attribute__ ((weak));
+
+void press(uint32_t key);
+void press(event_t event);
+void release(uint32_t key);
+void release(event_t event);

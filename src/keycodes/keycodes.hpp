@@ -325,7 +325,7 @@ enum hid_keyboard_keypad_usage : uint32_t {
     KC_KP_DECIMAL,
     KC_KP_HEXADECIMAL,
 
-    KC_LEFT_CTRL = TO_DEFAULT(0xE0),
+    KC_LEFT_CTRL = TO_FUNCTION(0xE0),
     KC_LEFT_SHIFT,
     KC_LEFT_ALT,
     KC_LEFT_GUI,
