@@ -7,6 +7,10 @@
 #define MATRIX_COLUMNS { A0, A1 };
 #define MATRIX_ROWS { A2, A3, A4 };
 
+#define DISPLAY_WIDTH 135
+#define DISPLAY_HEIGHT 240
+#define DISPLAY_ROTATION 2
+
 #define NEOPIXEL_PIN PIN_NEOPIXEL 
 #define NUMPIXELS 1
 

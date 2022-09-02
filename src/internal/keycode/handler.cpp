@@ -64,7 +64,7 @@ void handle_state(byte state, uint16_t size) {
         if (previous == current) continue;
 
         keycode_t key = layer_map[i];
-        uint8_t type = key >> 8;
+        uint8_t type = (key >> 12) << 4;
         uint8_t keycode = key ^ (type << 8);
 
         keydata_t keydata = {
@@ -97,17 +97,17 @@ void handle_event(event_t event) {
 
     switch(event.keydata.type) {
         case T_DEFAULT:
-            // if(!task_user_keycode_default(event)) break;
             switch(event.type) {
                 case EVENT_KEY_DOWN:
+                    if(HAS_MOD(event.keydata.key)) press_raw(MOD(event.keydata.key));
                     press_raw(event.keydata.keycode);
                     break;
                 case EVENT_KEY_UP:
                     release_raw(event.keydata.keycode);
+                    if(HAS_MOD(event.keydata.key)) release_raw(MOD(event.keydata.key));
                     break;
             }
         case T_MOD:
-            // if(!task_user_keycode_mod(event)) break;
             switch(event.type) {
                 case EVENT_KEY_DOWN:
                     press_raw(event.keydata.keycode);
@@ -118,7 +118,6 @@ void handle_event(event_t event) {
             }
             break;
         case T_MEDIA:
-            // if(!task_user_keycode_media(event)) break;
             switch(event.type) {
                 case EVENT_KEY_DOWN:
                     consumer.press(event.keydata.keycode);
