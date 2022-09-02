@@ -38,9 +38,22 @@ void gfx_flush() {
     canvas.fillScreen(DISPLAY_BACKGROUND_COLOR);
 }
 
+void gfx_backlight(bool state) {
+    digitalWrite(TFT_BACKLITE, state ? HIGH : LOW);
+}
+
+void gfx_display(bool state) {
+    digitalWrite(TFT_I2C_POWER, state ? HIGH : LOW);
+}
+
 #ifdef NEOPIXEL_ENABLED
 void gfx_set_led(uint16_t index, uint32_t color) {
     neopixel.setPixelColor(index, color);
+    neopixel.show();
+}
+
+void gfx_clear_leds() {
+    neopixel.clear();
     neopixel.show();
 }
 

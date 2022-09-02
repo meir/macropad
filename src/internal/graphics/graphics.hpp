@@ -32,7 +32,11 @@
 void gfx_init();
 void gfx_flush();
 
+void gfx_backlight(bool state);
+void gfx_display(bool state);
+
 void gfx_set_led(uint16_t index, uint32_t color) __attribute__ ((weak));
+void gfx_clear_leds() __attribute__ ((weak));
 Adafruit_NeoPixel pixels() __attribute__ ((weak));
 
 void task_user_gfx_init() __attribute__ ((weak));
