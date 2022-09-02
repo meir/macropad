@@ -64,7 +64,7 @@ void handle_state(byte state, uint16_t size) {
         if (previous == current) continue;
 
         keycode_t key = layer_map[i];
-        uint8_t type = key >> 8;
+        uint8_t type = (key >> 12) << 4;
         uint8_t keycode = key ^ (type << 8);
 
         keydata_t keydata = {
@@ -99,20 +99,12 @@ void handle_event(event_t event) {
         case T_DEFAULT:
             switch(event.type) {
                 case EVENT_KEY_DOWN:
-                    if(HAS_MOD(event.keydata.key)) {
-                        uint8_t mod = MOD(event.keydata.key);
-                        press_raw(mod);
-                    }
-
+                    if(HAS_MOD(event.keydata.key)) press_raw(MOD(event.keydata.key));
                     press_raw(event.keydata.keycode);
                     break;
                 case EVENT_KEY_UP:
                     release_raw(event.keydata.keycode);
-
-                    if(HAS_MOD(event.keydata.key)) {
-                        uint8_t mod = MOD(event.keydata.key);
-                        release_raw(mod);
-                    }
+                    if(HAS_MOD(event.keydata.key)) release_raw(MOD(event.keydata.key));
                     break;
             }
         case T_MOD:

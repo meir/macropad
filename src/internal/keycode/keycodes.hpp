@@ -270,8 +270,8 @@ enum modifier_keycodes : keycode_t {
 };
 
 #define ADD_MOD(key, mod) ( (keycode_t) (key | (((mod + 1) ^ 0xE0) << 8)))
-#define HAS_MOD(key) (key >> 8 > 0)
-#define MOD(key) ((key >> 8 | 0xE0) - 1)
+#define MOD(key) ((((key >> 8) ^ ((key >> 12) << 4)) - 1) | 0xE0)
+#define HAS_MOD(key) ((key >> 8) ^ ((key >> 12) << 4) != 0)
 
 #define LCTRL(key) ADD_MOD(key, KC_LCTRL)
 #define LSHIFT(key) ADD_MOD(key, KC_LSHIFT)
