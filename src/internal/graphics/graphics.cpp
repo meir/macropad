@@ -29,7 +29,6 @@ void gfx_init() {
     canvas.setCursor(0, 0);
     canvas.fillScreen(DISPLAY_BACKGROUND_COLOR);
     canvas.setTextColor(DISPLAY_FOREGROUND_COLOR);
-    canvas.println("init...");
     gfx_flush();
 }
 

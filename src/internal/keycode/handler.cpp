@@ -97,17 +97,25 @@ void handle_event(event_t event) {
 
     switch(event.keydata.type) {
         case T_DEFAULT:
-            // if(!task_user_keycode_default(event)) break;
             switch(event.type) {
                 case EVENT_KEY_DOWN:
+                    if(HAS_MOD(event.keydata.key)) {
+                        uint8_t mod = MOD(event.keydata.key);
+                        press_raw(mod);
+                    }
+
                     press_raw(event.keydata.keycode);
                     break;
                 case EVENT_KEY_UP:
                     release_raw(event.keydata.keycode);
+
+                    if(HAS_MOD(event.keydata.key)) {
+                        uint8_t mod = MOD(event.keydata.key);
+                        release_raw(mod);
+                    }
                     break;
             }
         case T_MOD:
-            // if(!task_user_keycode_mod(event)) break;
             switch(event.type) {
                 case EVENT_KEY_DOWN:
                     press_raw(event.keydata.keycode);
@@ -118,7 +126,6 @@ void handle_event(event_t event) {
             }
             break;
         case T_MEDIA:
-            // if(!task_user_keycode_media(event)) break;
             switch(event.type) {
                 case EVENT_KEY_DOWN:
                     consumer.press(event.keydata.keycode);

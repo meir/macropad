@@ -269,6 +269,19 @@ enum modifier_keycodes : keycode_t {
     KC_RGUI,
 };
 
+#define ADD_MOD(key, mod) ( (keycode_t) (key | (((mod + 1) ^ 0xE0) << 8)))
+#define HAS_MOD(key) (key >> 8 > 0)
+#define MOD(key) ((key >> 8 | 0xE0) - 1)
+
+#define LCTRL(key) ADD_MOD(key, KC_LCTRL)
+#define LSHIFT(key) ADD_MOD(key, KC_LSHIFT)
+#define LALT(key) ADD_MOD(key, KC_LALT)
+#define LGUI(key) ADD_MOD(key, KC_LGUI)
+#define RCTRL(key) ADD_MOD(key, KC_RCTRL)
+#define RSHIFT(key) ADD_MOD(key, KC_RSHIFT)
+#define RALT(key) ADD_MOD(key, KC_RALT)
+#define RGUI(key) ADD_MOD(key, KC_RGUI)
+
 enum system_keycodes : keycode_t {
     KC_SYSTEM_POWER         = KC(0x30, T_MEDIA),
     KC_SYSTEM_SLEEP,
