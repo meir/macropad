@@ -41,6 +41,7 @@ This should automatically shut down your board and compile and upload the code.
 - [x] MOD keys <sup>[*<sup>2</sup>](#iss-2)</sup>
 - [x] Custom keys
 - [ ] Layer keys
+- [ ] Transparent keycodes
 - [ ] Web configurator
 - [ ] Mouse keys
 - [ ] Macros
