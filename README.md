@@ -6,7 +6,7 @@ I've personally used an [Adafruit ESP32-S2 TFT Feather](https://www.adafruit.com
 
 ![macropad](./.github/assets/macropad.png)
 
-## Features
+## Features/Roadmap
 
 - [x] Keycodes
 - [x] Layers
@@ -16,6 +16,7 @@ I've personally used an [Adafruit ESP32-S2 TFT Feather](https://www.adafruit.com
 - [x] Custom keys
 - [ ] Layer keys
 - [ ] Web configurator
+- [ ] Mouse keys
 - [ ] Macros
 - [ ] Tapdances
 - [ ] Combos
