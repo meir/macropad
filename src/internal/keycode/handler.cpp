@@ -64,12 +64,12 @@ void handle_state(byte state, uint16_t size) {
         if (previous == current) continue;
 
         keycode_t key = layer_map[i];
-        uint8_t type = (key >> 12) << 4;
+        uint8_t type = (key >> 12);
         uint8_t keycode = key ^ (type << 8);
 
         keydata_t keydata = {
-            keycode,
             key,
+            keycode,
             (keycode_type_t)type,
         };
 

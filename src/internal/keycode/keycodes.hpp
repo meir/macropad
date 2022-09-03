@@ -5,16 +5,18 @@
 #include <vector>
 
 enum keycode_type_t : uint8_t {
-    T_DEFAULT           = 0x00,
-    T_MOD               = 0x10,
-    T_MEDIA             = 0x20,
-    T_LAYER_TOGL        = 0x30,
-    T_LAYER_HOLD        = 0x40,
-    T_LAYER_SWAP        = 0x50,
-    T_CUSTOM            = 0xF0,
+    T_DEFAULT           = 0x0,
+    T_MOD               = 0x1,
+    T_MEDIA             = 0x2,
+    T_LAYER_TOGL        = 0x3,
+    T_LAYER_HOLD        = 0x4,
+    T_LAYER_SWAP        = 0x5,
+    //... place for 9 more types
+    //    after that, probably need to update to uint16_t
+    T_CUSTOM            = 0xF,
 };
 
-#define KC(code, type) ((type << 8) | code)
+#define KC(code, type) ((type << 12) | code)
 
 #define HOLD(code) KC(code, T_LAYER_HOLD)
 #define TOGL(code) KC(code, T_LAYER_TOGGLE)
@@ -25,8 +27,8 @@ enum keycode_type_t : uint8_t {
 typedef uint16_t keycode_t;
 
 struct keydata_t {
-    uint8_t keycode;
     keycode_t key;
+    uint8_t keycode;
     keycode_type_t type;
 };
 
@@ -269,9 +271,9 @@ enum modifier_keycodes : keycode_t {
     KC_RGUI,
 };
 
-#define ADD_MOD(key, mod) ( (keycode_t) (key | (((mod + 1) ^ 0xE0) << 8)))
-#define MOD(key) ((((key >> 8) ^ ((key >> 12) << 4)) - 1) | 0xE0)
-#define HAS_MOD(key) ((key >> 8) ^ ((key >> 12) << 4) != 0)
+#define ADD_MOD(key, mod) ( (keycode_t) (key | ((mod + 1 ^ 0xE0) << 8)))
+#define MOD(key) (0xE0 | ((key >> 8) & 0x0F) - 1)
+#define HAS_MOD(key) ((key >> 8) & 0x0F != 0)
 
 #define LCTRL(key) ADD_MOD(key, KC_LCTRL)
 #define LSHIFT(key) ADD_MOD(key, KC_LSHIFT)

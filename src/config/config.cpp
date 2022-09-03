@@ -42,7 +42,7 @@ KEYMAP keymap(KEYMAP pref) {
         },
         {
             KC_TOGGLE_NEOPIXEL, KC_TOGGLE_LAYER_INFO, KC_TOGGLE_BACKLIGHT,
-            ____, KC_TOGGLE_DISPLAY, ____
+            ____, ____, ____
         }
     };
 }
@@ -60,7 +60,6 @@ LAYER_COLORS layer_colors(LAYER_COLORS pref) {
 bool neopixel_enabled = true;
 bool layerinfo_enabled = false;
 bool backlight_enabled = false;
-bool display_enabled = true;
 
 void task_user_keycode_custom(event_t event) {
     switch(event.keydata.key) {
@@ -81,11 +80,6 @@ void task_user_keycode_custom(event_t event) {
             backlight_enabled = !backlight_enabled;
             gfx_backlight(backlight_enabled);
             return;
-        case KC_TOGGLE_DISPLAY:
-            if(event.type != EVENT_KEY_DOWN) return;
-            display_enabled = !display_enabled;
-            gfx_display(display_enabled);
-            return;
     }
 };
 
@@ -98,6 +92,12 @@ void task_user_encoder_tick(event_t event) {
 void task_user_display_tick(event_t event) {
     if(layerinfo_enabled) {
         get_canvas()->setTextSize(1);
+        LAYER l = event.methods.get_layer_keys((*event.layer));
+        for(uint8_t i = 0; i < l.size(); i++) {
+            get_canvas()->println(String(l[i], HEX));
+            get_canvas()->println(String(HAS_MOD(l[i]), HEX) + " : " + String(MOD(l[i]), HEX));
+        }
+
         get_canvas()->setCursor(0, DISPLAY_HEIGHT - 24);
         uint8_t encoder_value = encoder.read();
         get_canvas()->println("{L: " + String((*event.layer), DEC) + ", R: " + String(encoder_value, DEC) + " }");
