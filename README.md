@@ -6,6 +6,32 @@ I've personally used an [Adafruit ESP32-S2 TFT Feather](https://www.adafruit.com
 
 ![macropad](./.github/assets/macropad.png)
 
+## Configuration
+
+At this time, this project does not have keyboard selection folder like QMK.
+You would need to manually modify this code in order to get it to work with your board.
+Currently all configuration can be done by modifying the following files:
+```
+./src/config/config.hpp
+./src/config/config.cpp
+```
+
+## Installation
+
+This project is made using [PlatformIO](https://platformio.org/)
+In order to use this project you need to install the `pio` command.
+Easiest way to do this would be using [Homebrew](https://formulae.brew.sh/formula/platformio#default) `brew install platformio`
+
+After this you can plug in your board and run the following:
+```
+# pio run -t upload
+```
+
+### VSCode
+Or you can install the [VSCode plugin](https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide)
+In this case you just need to install the plugin, open this project in it, connect your board and press upload.
+This should automatically shut down your board and compile and upload the code.
+
 ## Features/Roadmap
 
 - [x] Keycodes
