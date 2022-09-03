@@ -55,7 +55,7 @@ This should automatically shut down your board and compile and upload the code.
 
 Keycode                 | Key
 ------------------------|------
-`\_\_\_\_`              | NO
+`____`              | NO
 `KC_NO`                 | NO
 `KC_ROLL_OVER`          | Roll over
 `KC_POST_FAIL`          | Post fail
