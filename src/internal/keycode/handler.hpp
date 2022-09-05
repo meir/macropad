@@ -14,6 +14,7 @@
 
 void usb_init();
 void handle_user_tasks();
+int16_t has_keystate(uint8_t key_id);
 void handle_state(byte state, uint16_t size);
 void handle_event(event_t event);
 void flush();

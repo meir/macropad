@@ -60,6 +60,19 @@ void handle_user_tasks() {
     #endif
 }
 
+std::vector<keydata_t> keystates = {};
+
+int16_t has_keystate(uint8_t key_id) {
+    std::vector<keydata_t>::iterator i = keystates.begin();
+    while(i != keystates.end()) {
+        if (i->key_id == key_id) {
+            return i - keystates.begin();
+        }
+        i++;
+    }
+    return -1;
+}
+
 void handle_state(byte state, uint16_t size) {
     handle_user_tasks();
 
@@ -70,30 +83,37 @@ void handle_state(byte state, uint16_t size) {
     LAYER layer_map = get_layer_keys(layer);
 
     for(uint16_t i = 0; i < size; i++) {
-        byte previous = (previous_state >> i) & 1;
         byte current = (state >> i) & 1;
-
+        byte previous = (previous_state >> i) & 1;
         if (previous == current) continue;
 
-        keycode_t key = layer_map[i];
-        uint8_t type = (key >> 12);
-        uint8_t keycode = key ^ (type << 8);
+        event_t event;
+        event.methods = methods;
+        event.layer = &layer;
+        event.layer_count = layer_count;
+        event.type = event_type_t(current);
 
-        keydata_t keydata = {
-            key,
-            keycode,
-            (keycode_type_t)type,
-        };
+        int16_t state_id = has_keystate(i);
 
-        event_t event = {
-            .type = event_type_t(current),
-            .keydata = keydata,
-            .layer = &layer,
-            .layer_count = layer_count,
-            .methods = methods,
-        };
+        if(state_id >= 0) {
+            keydata_t keystate = keystates.at(state_id);
+            event.keydata = keystate;
+        }else{
+            keycode_t key = layer_map[i];
+            uint8_t type = (key >> 12);
+            uint8_t keycode = key ^ (type << 8);
+
+            keydata_t keydata = {
+                key,
+                keycode,
+                (keycode_type_t)type,
+                i,
+            };
+            event.keydata = keydata;
+        }
 
         handle_event(event);
+        keystates.erase(keystates.begin() + state_id); // Not sure why it only works here and not inside (state_id >= 0) block
     }
 
     previous_state = state;
@@ -113,6 +133,7 @@ void handle_event(event_t event) {
                 case EVENT_KEY_DOWN:
                     if(HAS_MOD(event.keydata.key)) press_raw(MOD(event.keydata.key));
                     press_raw(event.keydata.keycode);
+                    keystates.push_back(event.keydata);
                     break;
                 case EVENT_KEY_UP:
                     release_raw(event.keydata.keycode);
@@ -123,6 +144,7 @@ void handle_event(event_t event) {
             switch(event.type) {
                 case EVENT_KEY_DOWN:
                     press_raw(event.keydata.keycode);
+                    keystates.push_back(event.keydata);
                     break;
                 case EVENT_KEY_UP:
                     release_raw(event.keydata.keycode);
@@ -133,6 +155,7 @@ void handle_event(event_t event) {
             switch(event.type) {
                 case EVENT_KEY_DOWN:
                     consumer.press(event.keydata.keycode);
+                    keystates.push_back(event.keydata);
                     break;
                 case EVENT_KEY_UP:
                     consumer.release();
