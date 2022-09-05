@@ -34,11 +34,11 @@ This should automatically shut down your board and compile and upload the code.
 
 ## Features/Roadmap
 
-- [x] Keycodes
+- [x] Keycodes <sup>[*<sup>1</sup>](#iss-1)</sup>
 - [x] Layers
 - [x] Display
-- [x] Rotary encoders <sup>[*<sup>1</sup>](#iss-1)</sup>
-- [x] MOD keys <sup>[*<sup>2</sup>](#iss-2)</sup>
+- [x] Rotary encoders <sup>[*<sup>2</sup>](#iss-2)</sup>
+- [x] MOD keys <sup>[*<sup>3</sup>](#iss-3)</sup>
 - [x] Custom keys
 - [ ] Layer keys
 - [ ] Transparent keycodes
@@ -48,9 +48,13 @@ This should automatically shut down your board and compile and upload the code.
 - [ ] Tapdances
 - [ ] Combos
 
-<a name="iss-1">*<sup>1</sup></a>: This can be done using external libraries, currently the encoder values do not get read internally
+## Limitations
 
-<a name="iss-2">*<sup>2</sup></a>: Mod keys only support one level of mods currently, so you cant use `LSHIFT(LCTRL(KC_Z))`
+<a name="iss-1">*<sup>1</sup></a>: Currently the default ESP32 USB library is used, this library only supports 6 keystrokes at once, any keys after this gets ghosted.
+
+<a name="iss-2">*<sup>2</sup></a>: Rotary encoders can be done using external libraries, currently the encoder values do not get read internally
+
+<a name="iss-3">*<sup>3</sup></a>: Mod keys only support one level of mods currently, so you cant use `LSHIFT(LCTRL(KC_Z))`
 
 ## Keycodes
 
