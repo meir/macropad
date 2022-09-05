@@ -31,6 +31,10 @@ void usb_init() {
     USB.begin();
 }
 
+#ifdef DISPLAY_ANIMATION_ENABLED
+uint64_t last_animation_frame = 0;
+#endif
+
 void handle_user_tasks() {
     event_t event;
     event.methods = methods;
@@ -45,6 +49,14 @@ void handle_user_tasks() {
     #ifdef DISPLAY_ENABLED
     event.type = EVENT_DISPLAY_TICK;
     task_user_display_tick(event);
+    #endif
+
+    #ifdef DISPLAY_ANIMATION_ENABLED
+    if (millis() - last_animation_frame >= 1000 / DISPLAY_ANIMATION_FPS) {
+        last_animation_frame = millis();
+        event.type = EVENT_ANIMATION_FRAME;
+        task_user_animation_frame(event);
+    }
     #endif
 }
 

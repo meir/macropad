@@ -58,6 +58,7 @@ enum event_type_t : uint8_t {
     EVENT_KEY_DOWN,
     EVENT_ENCODER_TICK,
     EVENT_DISPLAY_TICK,
+    EVENT_ANIMATION_FRAME,
 };
 
 struct event_t {
@@ -79,6 +80,7 @@ void task_user_keycode(event_t event) __attribute__ ((weak));
 void task_user_keycode_custom(event_t event) __attribute__ ((weak));
 void task_user_encoder_tick(event_t event) __attribute__ ((weak));
 void task_user_display_tick(event_t event) __attribute__ ((weak));
+void task_user_animation_frame(event_t event) __attribute__ ((weak));
 
 KEYMAP keymap(KEYMAP pref) __attribute__ ((weak));
 LAYER_NAMES layer_names(LAYER_NAMES pref) __attribute__ ((weak));
