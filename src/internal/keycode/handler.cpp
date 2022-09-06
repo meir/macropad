@@ -113,7 +113,10 @@ void handle_state(byte state, uint16_t size) {
         }
 
         handle_event(event);
-        keystates.erase(keystates.begin() + state_id); // Not sure why it only works here and not inside (state_id >= 0) block
+        if (state_id >= 0) {
+            // Not sure why it only works here and not inside the first (state_id >= 0) block
+            keystates.erase(keystates.begin() + state_id);
+        }
     }
 
     previous_state = state;
@@ -127,13 +130,14 @@ void flush() {
 void handle_event(event_t event) {
     // if(task_user_keycode(event)) return;
 
+    if(event.type == EVENT_KEY_DOWN) keystates.push_back(event.keydata);
+
     switch(event.keydata.type) {
         case T_DEFAULT:
             switch(event.type) {
                 case EVENT_KEY_DOWN:
                     if(HAS_MOD(event.keydata.key)) press_raw(MOD(event.keydata.key));
                     press_raw(event.keydata.keycode);
-                    keystates.push_back(event.keydata);
                     break;
                 case EVENT_KEY_UP:
                     release_raw(event.keydata.keycode);
@@ -144,7 +148,6 @@ void handle_event(event_t event) {
             switch(event.type) {
                 case EVENT_KEY_DOWN:
                     press_raw(event.keydata.keycode);
-                    keystates.push_back(event.keydata);
                     break;
                 case EVENT_KEY_UP:
                     release_raw(event.keydata.keycode);
@@ -155,7 +158,6 @@ void handle_event(event_t event) {
             switch(event.type) {
                 case EVENT_KEY_DOWN:
                     consumer.press(event.keydata.keycode);
-                    keystates.push_back(event.keydata);
                     break;
                 case EVENT_KEY_UP:
                     consumer.release();
