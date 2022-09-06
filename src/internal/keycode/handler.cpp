@@ -113,7 +113,10 @@ void handle_state(byte state, uint16_t size) {
         }
 
         handle_event(event);
-        keystates.erase(keystates.begin() + state_id); // Not sure why it only works here and not inside (state_id >= 0) block
+        if (state_id >= 0) {
+            // Not sure why it only works here and not inside the first (state_id >= 0) block
+            keystates.erase(keystates.begin() + state_id);
+        }
     }
 
     previous_state = state;
