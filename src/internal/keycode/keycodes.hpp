@@ -31,6 +31,7 @@ struct keydata_t {
     uint8_t keycode;
     keycode_type_t type;
     uint16_t key_id;
+    uint8_t layer;
 };
 
 struct methods_t {

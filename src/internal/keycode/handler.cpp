@@ -108,6 +108,7 @@ void handle_state(byte state, uint16_t size) {
                 keycode,
                 (keycode_type_t)type,
                 i,
+                layer,
             };
             event.keydata = keydata;
         }
@@ -165,10 +166,22 @@ void handle_event(event_t event) {
             }
             break;
         case T_LAYER_HOLD:
-            // if(!task_user_keycode_layer_hold(event)) break;
+            switch(event.type) {
+                case EVENT_KEY_DOWN:
+                    (*event.layer) = event.keydata.keycode;
+                    break;
+                case EVENT_KEY_UP:
+                    (*event.layer) = event.keydata.layer;
+                    break;
+            }
         case T_LAYER_SWAP:
             // if(!task_user_keycode_layer_swap(event)) break;
         case T_LAYER_TOGL:
+            switch(event.type) {
+                case EVENT_KEY_DOWN:
+                    (*event.layer) = event.keydata.keycode;
+                    break;
+            }
             // if(!task_user_keycode_layer_toggle(event)) break;
         
         case T_CUSTOM:
