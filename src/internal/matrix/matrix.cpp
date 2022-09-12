@@ -4,7 +4,7 @@
 Matrix::Matrix(std::vector<uint8_t> columns, std::vector<uint8_t> rows) {
     this->columns = columns;
     this->rows = rows;
-    this->states = 0b0 << this->size();
+    this->states = 0;
 }
 
 void Matrix::scan() {
@@ -20,7 +20,7 @@ void Matrix::scan() {
             pinMode(column, INPUT);
 
             uint16_t pos = (r * this->columns.size() + c);
-            states = states ^ ((!state << pos) ^ states) & (0b1 << pos);
+            states = states ^ ((!state << pos) ^ states) & (1 << pos);
         }
 
         pinMode(row, INPUT);
@@ -32,7 +32,7 @@ uint16_t Matrix::size() {
 }
 
 bool Matrix::state(uint16_t index) {
-    return (states >> index) & 0b1;
+    return (states >> index) & 1;
 }
 
 uint32_t  Matrix::state() {
