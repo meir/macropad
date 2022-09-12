@@ -19,10 +19,7 @@ methods_t methods = {
 };
 
 uint8_t layer = 0;
-uint8_t layer_count = keymap({}).size();
-
 byte previous_state = 0;
-
 KeyReport report;
 
 void usb_init() {
@@ -39,7 +36,7 @@ void handle_user_tasks() {
     event_t event;
     event.methods = methods;
     event.layer = &layer;
-    event.layer_count = layer_count;
+    event.layer_count = keymap({}).size();
 
     #ifdef ENCODER_ENABLED
     event.type = EVENT_ENCODER_TICK;
@@ -74,8 +71,6 @@ int16_t has_keystate(uint8_t key_id) {
 }
 
 void handle_state(byte state, uint16_t size) {
-    handle_user_tasks();
-
     if (state == previous_state) {
         return;
     }
@@ -90,7 +85,7 @@ void handle_state(byte state, uint16_t size) {
         event_t event;
         event.methods = methods;
         event.layer = &layer;
-        event.layer_count = layer_count;
+        event.layer_count = keymap({}).size();
         event.type = event_type_t(current);
 
         int16_t state_id = has_keystate(i);
@@ -182,7 +177,7 @@ void press(uint16_t keycode) {
     uint8_t code = keycode;
 
     keydata_t keydata = {code, keycode_type_t(type)};
-    event_t event = {EVENT_KEY_DOWN, keydata, &layer, layer_count, methods};
+    event_t event = {EVENT_KEY_DOWN, keydata, &layer, keymap({}).size(), methods};
 
     handle_event(event);
 }
@@ -192,7 +187,7 @@ void release(uint16_t keycode) {
     uint8_t code = keycode;
 
     keydata_t keydata = {code, keycode_type_t(type)};
-    event_t event = {EVENT_KEY_UP, keydata, &layer, layer_count, methods};
+    event_t event = {EVENT_KEY_UP, keydata, &layer, keymap({}).size(), methods};
 
     handle_event(event);
 }
