@@ -12,11 +12,9 @@
 Encoder encoder(ENCODER_PIN_A, ENCODER_PIN_B);
 
 enum custom_keys : keycode_t {
-    MORNING = KC_CUSTOM,
-    KC_TOGGLE_NEOPIXEL,
+    KC_TOGGLE_NEOPIXEL = KC_CUSTOM,
     KC_TOGGLE_LAYER_INFO,
     KC_TOGGLE_BACKLIGHT,
-    KC_TOGGLE_DISPLAY,
 };
 
 KEYMAP keymap(KEYMAP pref) {
@@ -39,24 +37,12 @@ KEYMAP keymap(KEYMAP pref) {
             ____, RCTRL(KC_F21), RCTRL(KC_F22)
         },
         {
-            RSHIFT(KC_F13), RSHIFT(KC_F14), RSHIFT(KC_F15),
-            ____, RSHIFT(KC_F16), RSHIFT(KC_F17)
-        },
-        {
-            RSHIFT(KC_F18), RSHIFT(KC_F19), RSHIFT(KC_F20),
-            ____, RSHIFT(KC_F21), RSHIFT(KC_F22)
-        },
-        {
             KC_Q,   KC_W,   KC_E,   
             ____, KC_R,   KC_LCTRL
         },
         {
             KC_PREV_TRACK, KC_PLAY_PAUSE, KC_NEXT_TRACK, 
             ____, LCTRL(KC_Z), LCTRL(KC_Y)
-        },
-        {
-            MORNING, MORNING, MORNING, 
-            ____, MORNING, MORNING
         },
         {
             KC_TOGGLE_NEOPIXEL, KC_TOGGLE_LAYER_INFO, KC_TOGGLE_BACKLIGHT,
@@ -71,12 +57,9 @@ LAYER_NAMES layer_names(LAYER_NAMES pref) {
         "F13-F17", 
         "F18-F22",
         "CTL F13-F17",
-        "CTL F18-F22",
-        "SFT F13-F17",
-        "SFT F18-F22", 
+        "CTL F18-F22", 
         "League", 
-        "Media", 
-        "Morning", 
+        "Media",  
         "Toggles"
     };
 }
@@ -88,11 +71,8 @@ LAYER_COLORS layer_colors(LAYER_COLORS pref) {
         0x7e2bcc, 
         0xd9276b, 
         0xd9276b,
-        0x2b6bd9,
-        0x2b6bd9,
         0xebeb54, 
-        0x2b2b2b, 
-        0xffffff, 
+        0x2b2b2b,  
         0x2b2b2b,
     };
 }
@@ -103,10 +83,6 @@ bool backlight_enabled = false;
 
 void task_user_keycode_custom(event_t event) {
     switch(event.keydata.key) {
-        case MORNING:
-            if(event.type != EVENT_KEY_DOWN) return;
-            event.methods.println("morning");
-            return;
         case KC_TOGGLE_NEOPIXEL:
             if(event.type != EVENT_KEY_DOWN) return;
             neopixel_enabled = !neopixel_enabled;
