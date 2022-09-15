@@ -124,8 +124,6 @@ void flush() {
 }
 
 void handle_event(event_t event) {
-    // if(task_user_keycode(event)) return;
-
     if(event.type == EVENT_KEY_DOWN) keystates.push_back(event.keydata);
 
     switch(event.keydata.type) {
@@ -140,6 +138,8 @@ void handle_event(event_t event) {
                     if(HAS_MOD(event.keydata.key)) release_raw(MOD(event.keydata.key));
                     break;
             }
+            break;
+
         case T_MOD:
             switch(event.type) {
                 case EVENT_KEY_DOWN:
@@ -150,6 +150,7 @@ void handle_event(event_t event) {
                     break;
             }
             break;
+
         case T_MEDIA:
             switch(event.type) {
                 case EVENT_KEY_DOWN:
@@ -160,6 +161,7 @@ void handle_event(event_t event) {
                     break;
             }
             break;
+
         case T_LAYER_HOLD:
             switch(event.type) {
                 case EVENT_KEY_DOWN:
@@ -169,15 +171,23 @@ void handle_event(event_t event) {
                     (*event.layer) = event.keydata.layer;
                     break;
             }
+            break;
+
         case T_LAYER_SWAP:
-            // if(!task_user_keycode_layer_swap(event)) break;
+            switch(event.type) {
+                case EVENT_KEY_DOWN:
+                    (*event.layer) = event.keydata.keycode;
+                    break;
+            }
+            break;
+
         case T_LAYER_TOGL:
             switch(event.type) {
                 case EVENT_KEY_DOWN:
                     (*event.layer) = event.keydata.keycode;
                     break;
             }
-            // if(!task_user_keycode_layer_toggle(event)) break;
+            break;
         
         case T_CUSTOM:
             task_user_keycode_custom(event);

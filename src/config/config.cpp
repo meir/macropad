@@ -79,7 +79,7 @@ LAYER_COLORS layer_colors(LAYER_COLORS pref) {
 
 bool neopixel_enabled = true;
 bool layerinfo_enabled = false;
-bool backlight_enabled = false;
+bool backlight_enabled = true;
 
 void task_user_keycode_custom(event_t event) {
     switch(event.keydata.key) {
