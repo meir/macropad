@@ -10,7 +10,7 @@ enum keycode_type_t : uint8_t {
     T_MEDIA             = 0x2,
     T_LAYER_TOGL        = 0x3,
     T_LAYER_HOLD        = 0x4,
-    T_LAYER_SWAP        = 0x5,
+    T_LAYER_TAP         = 0x5,
     //... place for 9 more types
     //    after that, probably need to update to uint16_t
     T_CUSTOM            = 0xF,
@@ -19,8 +19,8 @@ enum keycode_type_t : uint8_t {
 #define KC(code, type) ((type << 12) | code)
 
 #define HOLD(code) KC(code, T_LAYER_HOLD)
-#define TOGL(code) KC(code, T_LAYER_TOGGLE)
-#define TO(code) KC(code, T_LAYER_SWAP)
+#define TO(code) KC(code, T_LAYER_TOGGLE)
+#define TAP(code) KC(code, T_LAYER_TAP)
 
 #define KC_CUSTOM KC(0, T_CUSTOM)
 
@@ -61,6 +61,7 @@ enum event_type_t : uint8_t {
     EVENT_ENCODER_TICK,
     EVENT_DISPLAY_TICK,
     EVENT_ANIMATION_FRAME,
+    EVENT_TAP_LAYER,
 };
 
 struct event_t {
@@ -79,6 +80,8 @@ typedef std::vector<uint32_t> LAYER_COLORS;
 /** weaks **/
 
 void task_user_keycode(event_t event) __attribute__ ((weak));
+void task_user_onrelease(event_t event) __attribute__ ((weak));
+void task_user_onpress(event_t event) __attribute__ ((weak));
 void task_user_keycode_custom(event_t event) __attribute__ ((weak));
 void task_user_encoder_tick(event_t event) __attribute__ ((weak));
 void task_user_display_tick(event_t event) __attribute__ ((weak));

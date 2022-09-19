@@ -51,7 +51,7 @@ KEYMAP keymap(KEYMAP pref) {
         },
         {
             KC_TOGGLE_NEOPIXEL, KC_TOGGLE_LAYER_INFO, KC_TOGGLE_BACKLIGHT,
-            ____, ____, ____
+            ____, TAP(1), HOLD(2)
         }
     };
 }

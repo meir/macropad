@@ -64,6 +64,7 @@ void handle_user_tasks() {
 }
 
 std::vector<keydata_t> keystates = {};
+int8_t tap_layer = -1; // just hardcode taplayers for now since its much easier than having an event array for it
 
 int16_t has_keystate(uint8_t key_id) {
     std::vector<keydata_t>::iterator i = keystates.begin();
@@ -172,17 +173,23 @@ void handle_event(event_t event) {
             switch(event.type) {
                 case EVENT_KEY_DOWN:
                     (*event.layer) = event.keydata.keycode;
-                    break;
+                    return; // prevent release event to be called
                 case EVENT_KEY_UP:
                     (*event.layer) = event.keydata.layer;
-                    break;
+                    return; // prevent release event to be called
             }
             break;
 
-        case T_LAYER_SWAP:
+        case T_LAYER_TAP:
             switch(event.type) {
                 case EVENT_KEY_DOWN:
                     (*event.layer) = event.keydata.keycode;
+                    tap_layer = event.keydata.layer;
+                case EVENT_KEY_UP:
+                    return; // prevent release event to be called
+
+                case EVENT_TAP_LAYER:
+                    (*event.layer) = event.keydata.layer;
                     break;
             }
             break;
@@ -191,7 +198,7 @@ void handle_event(event_t event) {
             switch(event.type) {
                 case EVENT_KEY_DOWN:
                     (*event.layer) = event.keydata.keycode;
-                    break;
+                    return; // prevent release event to be called
             }
             break;
         
@@ -199,6 +206,28 @@ void handle_event(event_t event) {
             task_user_keycode_custom(event);
             break;
     }
+
+    switch(event.type) {
+        case EVENT_KEY_DOWN:
+            onpress(event);
+            break;
+        case EVENT_KEY_UP:
+            onrelease(event);
+            break;
+    }
+}
+
+void onpress(event_t e) {
+    task_user_onpress(e);
+}
+
+void onrelease(event_t e) {
+    if(tap_layer >= 0) {
+        (*e.layer) = tap_layer;
+        tap_layer = -1;
+    }
+
+    task_user_onrelease(e);
 }
 
 void press(uint16_t keycode) {
