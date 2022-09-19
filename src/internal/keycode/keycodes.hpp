@@ -84,6 +84,14 @@ void task_user_encoder_tick(event_t event) __attribute__ ((weak));
 void task_user_display_tick(event_t event) __attribute__ ((weak));
 void task_user_animation_frame(event_t event) __attribute__ ((weak));
 
+struct usb_config_t {
+    String product_name;
+    String manufacturer_name;
+    String serial_number;
+};
+
+usb_config_t usb_config() __attribute__ ((weak));
+
 KEYMAP keymap(KEYMAP pref) __attribute__ ((weak));
 LAYER_NAMES layer_names(LAYER_NAMES pref) __attribute__ ((weak));
 LAYER_COLORS layer_colors(LAYER_COLORS pref) __attribute__ ((weak));

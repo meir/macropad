@@ -23,6 +23,12 @@ byte previous_state = 0;
 KeyReport report;
 
 void usb_init() {
+    usb_config_t config = usb_config();
+
+    USB.manufacturerName(config.manufacturer_name.c_str());
+    USB.productName(config.product_name.c_str());
+    USB.serialNumber(config.serial_number.c_str());
+
     consumer.begin();
     keyboard.begin();
     USB.begin();
@@ -200,7 +206,7 @@ void press(uint16_t keycode) {
     uint8_t code = keycode;
 
     keydata_t keydata = {code, keycode_type_t(type)};
-    event_t event = {EVENT_KEY_DOWN, keydata, &layer, keymap({}).size(), methods};
+    event_t event = {EVENT_KEY_DOWN, keydata, &layer, uint8_t(keymap({}).size()), methods};
 
     handle_event(event);
 }
@@ -210,7 +216,7 @@ void release(uint16_t keycode) {
     uint8_t code = keycode;
 
     keydata_t keydata = {code, keycode_type_t(type)};
-    event_t event = {EVENT_KEY_UP, keydata, &layer, keymap({}).size(), methods};
+    event_t event = {EVENT_KEY_UP, keydata, &layer, uint8_t(keymap({}).size()), methods};
 
     handle_event(event);
 }

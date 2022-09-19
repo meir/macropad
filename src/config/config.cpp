@@ -4,6 +4,7 @@
 #include "ditto.cpp"
 
 #include <Encoder.h>
+#include <TimeLib.h>
 
 #define ENCODER_PIN_A 12
 #define ENCODER_PIN_B 13
@@ -17,9 +18,21 @@ enum custom_keys : keycode_t {
     KC_TOGGLE_BACKLIGHT,
 };
 
+usb_config_t usb_config() {
+    return {
+        .product_name = "Avant-Garde",
+        .manufacturer_name = "Flamingo.dev",
+        .serial_number = "0",
+    };
+}
+
 KEYMAP keymap(KEYMAP pref) {
     if(pref.size() != 0) return pref;
     return {
+        {
+            KC_PREV_TRACK, KC_PLAY_PAUSE, KC_NEXT_TRACK, 
+            ____, LCTRL(KC_Z), LCTRL(KC_Y)
+        },
         {
             KC_F13, KC_F14, KC_F15, 
             ____, KC_F16, KC_F17
@@ -37,14 +50,6 @@ KEYMAP keymap(KEYMAP pref) {
             ____, RCTRL(KC_F21), RCTRL(KC_F22)
         },
         {
-            KC_Q,   KC_W,   KC_E,   
-            ____, KC_R,   KC_LCTRL
-        },
-        {
-            KC_PREV_TRACK, KC_PLAY_PAUSE, KC_NEXT_TRACK, 
-            ____, LCTRL(KC_Z), LCTRL(KC_Y)
-        },
-        {
             KC_TOGGLE_NEOPIXEL, KC_TOGGLE_LAYER_INFO, KC_TOGGLE_BACKLIGHT,
             ____, ____, ____
         }
@@ -54,12 +59,11 @@ KEYMAP keymap(KEYMAP pref) {
 LAYER_NAMES layer_names(LAYER_NAMES pref) {
     if(pref.size() != 0) return pref;
     return {
+        "Media",
         "F13-F17", 
         "F18-F22",
         "CTL F13-F17",
         "CTL F18-F22", 
-        "League", 
-        "Media",  
         "Toggles"
     };
 }
@@ -67,12 +71,11 @@ LAYER_NAMES layer_names(LAYER_NAMES pref) {
 LAYER_COLORS layer_colors(LAYER_COLORS pref) {
     if(pref.size() != 0) return pref;
     return {
+        0xebeb54,
         0x7e2bcc, 
         0x7e2bcc, 
         0xd9276b, 
-        0xd9276b,
-        0xebeb54, 
-        0x2b2b2b,  
+        0xd9276b,  
         0x2b2b2b,
     };
 }
@@ -124,11 +127,14 @@ void task_user_display_tick(event_t event) {
     }
 
     
+    canvas->setCursor(0, DISPLAY_HEIGHT - 32);
+    canvas->setTextSize(2);
+    canvas->println(String(hour(), DEC) + ":" + String(minute(), DEC) + ":" + String(second(), DEC));
+
     canvas->setCursor(0, DISPLAY_HEIGHT - 24);
     canvas->setTextSize(3);
     canvas->println(event.methods.get_layer_name(*event.layer));
-
-    canvas->drawBitmap(0, 0, ditto_bitmap[current_frame], 135, 135, 0xffff);
+    canvas->drawRGBBitmap(0, 0, ditto_bitmap[current_frame], 135, 135);
 
     if(neopixel_enabled) {
         gfx_set_led(0, event.methods.get_layer_color(*event.layer));
