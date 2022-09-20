@@ -18,6 +18,8 @@ int16_t has_keystate(uint8_t key_id);
 void handle_state(byte state, uint16_t size);
 void handle_event(event_t event);
 void flush();
+void onpress(event_t event);
+void onrelease(event_t event);
 void press(uint16_t keycode);
 void release(uint16_t keycode);
 void press_raw(uint8_t keycode);
