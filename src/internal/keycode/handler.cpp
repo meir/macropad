@@ -187,10 +187,6 @@ void handle_event(event_t event) {
                     tap_layer = event.keydata.layer;
                 case EVENT_KEY_UP:
                     return; // prevent release event to be called
-
-                case EVENT_TAP_LAYER:
-                    (*event.layer) = event.keydata.layer;
-                    break;
             }
             break;
 
@@ -207,14 +203,14 @@ void handle_event(event_t event) {
             break;
     }
 
-    switch(event.type) {
-        case EVENT_KEY_DOWN:
-            onpress(event);
-            break;
-        case EVENT_KEY_UP:
-            onrelease(event);
-            break;
-    }
+    // switch(event.type) {
+    //     case EVENT_KEY_DOWN:
+    //         onpress(event);
+    //         break;
+    //     case EVENT_KEY_UP:
+    //         onrelease(event);
+    //         break;
+    // }
 }
 
 void onpress(event_t e) {

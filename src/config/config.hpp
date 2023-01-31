@@ -22,5 +22,9 @@
 #define DISPLAY_ENABLED
 #define WEBSITE_ENABLED
 
-#define NETWORK_SSID ""
-#define NETWORK_PASS ""
+#include "./wifi.hpp"
+
+#define NETWORK_ENABLED
+
+#define NETWORK_SSID WIFI_SSID
+#define NETWORK_PASS WIFI_PASS

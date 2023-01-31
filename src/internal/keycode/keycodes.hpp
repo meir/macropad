@@ -61,7 +61,6 @@ enum event_type_t : uint8_t {
     EVENT_ENCODER_TICK,
     EVENT_DISPLAY_TICK,
     EVENT_ANIMATION_FRAME,
-    EVENT_TAP_LAYER,
 };
 
 struct event_t {
