@@ -20,7 +20,6 @@ void gfx_init() {
 
     tft.init(DISPLAY_WIDTH, DISPLAY_HEIGHT);
     tft.setRotation(DISPLAY_ROTATION);
-    tft.setRotation(2);
 
     #ifdef NEOPIXEL_ENABLED
         neopixel.begin();
