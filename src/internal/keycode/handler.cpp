@@ -23,6 +23,12 @@ byte previous_state = 0;
 KeyReport report;
 
 void usb_init() {
+    usb_config_t config = usb_config();
+
+    USB.manufacturerName(config.manufacturer_name.c_str());
+    USB.productName(config.product_name.c_str());
+    USB.serialNumber(config.serial_number.c_str());
+
     consumer.begin();
     keyboard.begin();
     USB.begin();
@@ -58,6 +64,7 @@ void handle_user_tasks() {
 }
 
 std::vector<keydata_t> keystates = {};
+int8_t tap_layer = -1; // just hardcode taplayers for now since its much easier than having an event array for it
 
 int16_t has_keystate(uint8_t key_id) {
     std::vector<keydata_t>::iterator i = keystates.begin();
@@ -103,6 +110,7 @@ void handle_state(byte state, uint16_t size) {
                 keycode,
                 (keycode_type_t)type,
                 i,
+                layer,
             };
             event.keydata = keydata;
         }
@@ -123,8 +131,6 @@ void flush() {
 }
 
 void handle_event(event_t event) {
-    // if(task_user_keycode(event)) return;
-
     if(event.type == EVENT_KEY_DOWN) keystates.push_back(event.keydata);
 
     switch(event.keydata.type) {
@@ -139,6 +145,8 @@ void handle_event(event_t event) {
                     if(HAS_MOD(event.keydata.key)) release_raw(MOD(event.keydata.key));
                     break;
             }
+            break;
+
         case T_MOD:
             switch(event.type) {
                 case EVENT_KEY_DOWN:
@@ -149,6 +157,7 @@ void handle_event(event_t event) {
                     break;
             }
             break;
+
         case T_MEDIA:
             switch(event.type) {
                 case EVENT_KEY_DOWN:
@@ -159,17 +168,62 @@ void handle_event(event_t event) {
                     break;
             }
             break;
+
         case T_LAYER_HOLD:
-            // if(!task_user_keycode_layer_hold(event)) break;
-        case T_LAYER_SWAP:
-            // if(!task_user_keycode_layer_swap(event)) break;
+            switch(event.type) {
+                case EVENT_KEY_DOWN:
+                    (*event.layer) = event.keydata.keycode;
+                    return; // prevent release event to be called
+                case EVENT_KEY_UP:
+                    (*event.layer) = event.keydata.layer;
+                    return; // prevent release event to be called
+            }
+            break;
+
+        case T_LAYER_TAP:
+            switch(event.type) {
+                case EVENT_KEY_DOWN:
+                    (*event.layer) = event.keydata.keycode;
+                    tap_layer = event.keydata.layer;
+                case EVENT_KEY_UP:
+                    return; // prevent release event to be called
+            }
+            break;
+
         case T_LAYER_TOGL:
-            // if(!task_user_keycode_layer_toggle(event)) break;
+            switch(event.type) {
+                case EVENT_KEY_DOWN:
+                    (*event.layer) = event.keydata.keycode;
+                    return; // prevent release event to be called
+            }
+            break;
         
         case T_CUSTOM:
             task_user_keycode_custom(event);
             break;
     }
+
+    // switch(event.type) {
+    //     case EVENT_KEY_DOWN:
+    //         onpress(event);
+    //         break;
+    //     case EVENT_KEY_UP:
+    //         onrelease(event);
+    //         break;
+    // }
+}
+
+void onpress(event_t e) {
+    task_user_onpress(e);
+}
+
+void onrelease(event_t e) {
+    if(tap_layer >= 0) {
+        (*e.layer) = tap_layer;
+        tap_layer = -1;
+    }
+
+    task_user_onrelease(e);
 }
 
 void press(uint16_t keycode) {
@@ -177,7 +231,7 @@ void press(uint16_t keycode) {
     uint8_t code = keycode;
 
     keydata_t keydata = {code, keycode_type_t(type)};
-    event_t event = {EVENT_KEY_DOWN, keydata, &layer, keymap({}).size(), methods};
+    event_t event = {EVENT_KEY_DOWN, keydata, &layer, uint8_t(keymap({}).size()), methods};
 
     handle_event(event);
 }
@@ -187,7 +241,7 @@ void release(uint16_t keycode) {
     uint8_t code = keycode;
 
     keydata_t keydata = {code, keycode_type_t(type)};
-    event_t event = {EVENT_KEY_UP, keydata, &layer, keymap({}).size(), methods};
+    event_t event = {EVENT_KEY_UP, keydata, &layer, uint8_t(keymap({}).size()), methods};
 
     handle_event(event);
 }

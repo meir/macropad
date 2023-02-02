@@ -10,7 +10,7 @@ enum keycode_type_t : uint8_t {
     T_MEDIA             = 0x2,
     T_LAYER_TOGL        = 0x3,
     T_LAYER_HOLD        = 0x4,
-    T_LAYER_SWAP        = 0x5,
+    T_LAYER_TAP         = 0x5,
     //... place for 9 more types
     //    after that, probably need to update to uint16_t
     T_CUSTOM            = 0xF,
@@ -19,8 +19,8 @@ enum keycode_type_t : uint8_t {
 #define KC(code, type) ((type << 12) | code)
 
 #define HOLD(code) KC(code, T_LAYER_HOLD)
-#define TOGL(code) KC(code, T_LAYER_TOGGLE)
-#define TO(code) KC(code, T_LAYER_SWAP)
+#define TO(code) KC(code, T_LAYER_TOGGLE)
+#define TAP(code) KC(code, T_LAYER_TAP)
 
 #define KC_CUSTOM KC(0, T_CUSTOM)
 
@@ -31,6 +31,7 @@ struct keydata_t {
     uint8_t keycode;
     keycode_type_t type;
     uint16_t key_id;
+    uint8_t layer;
 };
 
 struct methods_t {
@@ -78,10 +79,20 @@ typedef std::vector<uint32_t> LAYER_COLORS;
 /** weaks **/
 
 void task_user_keycode(event_t event) __attribute__ ((weak));
+void task_user_onrelease(event_t event) __attribute__ ((weak));
+void task_user_onpress(event_t event) __attribute__ ((weak));
 void task_user_keycode_custom(event_t event) __attribute__ ((weak));
 void task_user_encoder_tick(event_t event) __attribute__ ((weak));
 void task_user_display_tick(event_t event) __attribute__ ((weak));
 void task_user_animation_frame(event_t event) __attribute__ ((weak));
+
+struct usb_config_t {
+    String product_name;
+    String manufacturer_name;
+    String serial_number;
+};
+
+usb_config_t usb_config() __attribute__ ((weak));
 
 KEYMAP keymap(KEYMAP pref) __attribute__ ((weak));
 LAYER_NAMES layer_names(LAYER_NAMES pref) __attribute__ ((weak));

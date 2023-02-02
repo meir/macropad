@@ -1,9 +1,8 @@
 
 #include "config.hpp"
-
 #include "ditto.cpp"
-
 #include <Encoder.h>
+
 
 #define ENCODER_PIN_A 12
 #define ENCODER_PIN_B 13
@@ -17,36 +16,44 @@ enum custom_keys : keycode_t {
     KC_TOGGLE_BACKLIGHT,
 };
 
+usb_config_t usb_config() {
+    return {
+        .product_name = "Avant-Garde",
+        .manufacturer_name = "Flamingo.dev",
+        .serial_number = "0",
+    };
+}
+
 KEYMAP keymap(KEYMAP pref) {
     if(pref.size() != 0) return pref;
     return {
-        {
-            KC_F13, KC_F14, KC_F15, 
-            ____, KC_F16, KC_F17
-        },
-        {
-            KC_F18, KC_F19, KC_F20, 
-            ____, KC_F21, KC_F22
-        },
-        {
-            RCTRL(KC_F13), RCTRL(KC_F14), RCTRL(KC_F15),
-            ____, RCTRL(KC_F16), RCTRL(KC_F17) 
-        },
-        {
-            RCTRL(KC_F18), RCTRL(KC_F19), RCTRL(KC_F20),
-            ____, RCTRL(KC_F21), RCTRL(KC_F22)
-        },
-        {
-            KC_Q,   KC_W,   KC_E,   
-            ____, KC_R,   KC_LCTRL
-        },
         {
             KC_PREV_TRACK, KC_PLAY_PAUSE, KC_NEXT_TRACK, 
             ____, LCTRL(KC_Z), LCTRL(KC_Y)
         },
         {
+            KC_F13, KC_F14, KC_F15, 
+            KC_F16, KC_F17, KC_F18
+        },
+        {
+            KC_F19, KC_F20, KC_F21, 
+            KC_F22, KC_F23, KC_F24
+        },
+        {
+            LCTRL(KC_F13), LCTRL(KC_F14), LCTRL(KC_F15),
+            LCTRL(KC_F16), LCTRL(KC_F17), LCTRL(KC_F18),
+        },
+        {
+            LCTRL(KC_F19), LCTRL(KC_F20), LCTRL(KC_F21),
+            LCTRL(KC_F22), LCTRL(KC_F23), LCTRL(KC_F24),
+        },
+        {
+            KC_Q, KC_W, KC_E,
+            KC_B, KC_R, KC_LCTRL,
+        },
+        {
             KC_TOGGLE_NEOPIXEL, KC_TOGGLE_LAYER_INFO, KC_TOGGLE_BACKLIGHT,
-            ____, ____, ____
+            ____, TAP(1), HOLD(2)
         }
     };
 }
@@ -54,12 +61,12 @@ KEYMAP keymap(KEYMAP pref) {
 LAYER_NAMES layer_names(LAYER_NAMES pref) {
     if(pref.size() != 0) return pref;
     return {
-        "F13-F17", 
-        "F18-F22",
-        "CTL F13-F17",
-        "CTL F18-F22", 
-        "League", 
-        "Media",  
+        "Media",
+        "F13-F18", 
+        "F19-F24",
+        "CTL F13-F18",
+        "CTL F19-F24", 
+        "League",
         "Toggles"
     };
 }
@@ -67,19 +74,19 @@ LAYER_NAMES layer_names(LAYER_NAMES pref) {
 LAYER_COLORS layer_colors(LAYER_COLORS pref) {
     if(pref.size() != 0) return pref;
     return {
+        0xebeb54,
         0x7e2bcc, 
         0x7e2bcc, 
         0xd9276b, 
-        0xd9276b,
-        0xebeb54, 
-        0x2b2b2b,  
+        0xd9276b,  
+        0x2b7ecc,
         0x2b2b2b,
     };
 }
 
 bool neopixel_enabled = true;
 bool layerinfo_enabled = false;
-bool backlight_enabled = false;
+bool backlight_enabled = true;
 
 void task_user_keycode_custom(event_t event) {
     switch(event.keydata.key) {
@@ -100,8 +107,11 @@ void task_user_keycode_custom(event_t event) {
 };
 
 void task_user_encoder_tick(event_t event) {
-    uint8_t encoder_value = encoder.read();
-    uint8_t layer_change = (encoder_value / ROTARY_DIVIDER) % event.layer_count;
+    int8_t encoder_value = encoder.read();
+    if (encoder_value < 0) {
+        encoder_value = (event.layer_count * 10) - encoder_value;
+    }
+    int8_t layer_change = (encoder_value / ROTARY_DIVIDER) % event.layer_count;
     (*event.layer) = layer_change;
 }
 
@@ -123,11 +133,9 @@ void task_user_display_tick(event_t event) {
         canvas->println("{L: " + String((*event.layer), DEC) + ", R: " + String(encoder_value, DEC) + " }");
     }
 
-    
     canvas->setCursor(0, DISPLAY_HEIGHT - 24);
     canvas->setTextSize(3);
     canvas->println(event.methods.get_layer_name(*event.layer));
-
     canvas->drawBitmap(0, 0, ditto_bitmap[current_frame], 135, 135, 0xffff);
 
     if(neopixel_enabled) {
@@ -139,7 +147,7 @@ void task_user_display_tick(event_t event) {
 
 void task_user_animation_frame(event_t event) {
     current_frame += 1;
-    if(current_frame >= DITTO_FRAMES) {
+    if(current_frame >= FRAMES) {
         current_frame = 0;
     }
 }

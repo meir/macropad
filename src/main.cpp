@@ -44,9 +44,9 @@ void setup() {
 }
 
 void loop() {
-    thread_matrix = std::thread(matrix_loop);
     thread_user_tasks = std::thread(user_tasks_loop);
+    thread_matrix = std::thread(matrix_loop);
 
-    thread_matrix.join();
     thread_user_tasks.join();
+    thread_matrix.join();
 }
